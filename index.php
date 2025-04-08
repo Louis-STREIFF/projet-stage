@@ -52,8 +52,9 @@ $artistes = getArtistesFromAirtable();
         </select>
     </div>
     <div class="form-group">
-        <button type="submit">Filtrer et Trier</button>
+        <a href="ajouter_artiste.php" class="btn"> Ou alors voulez vous ajouter un artiste?</a>
     </div>
+
 </form>
 
 <div id="all-artistes">

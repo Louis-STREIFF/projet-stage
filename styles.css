@@ -86,7 +86,7 @@ button:hover {
     border-radius: 10px;
 }
 .selected-formats {
-    display: flex;
+    display: none;
     flex-wrap: wrap;
     margin-top: 10px;
 }
@@ -114,3 +114,17 @@ button:hover {
     color: #FFD700;
     text-decoration: underline;
 }
+
+select[multiple] {
+    height: 150px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.selected-format {
+    background-color: #e0e0e0;
+    padding: 5px 8px;
+    border-radius: 10px;
+    display: inline-block;
+}
+

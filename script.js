@@ -8,11 +8,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     formatSelect.addEventListener('change', function () {
         const selectedFormat = formatSelect.value;
-        if (selectedFormat) {
+        if (selectedFormat && !isFormatSelected(selectedFormat)) {
             addSelectedFormat(selectedFormat);
-            formatSelect.value = '';
+            formatSelect.value = ''; // Réinitialise la sélection
             updateSelectedFormatsInput();
             performSearch();
+        } else if (selectedFormat) {
+            alert('Ce format a déjà été sélectionné.');
+            formatSelect.value = ''; // Réinitialise la sélection
         }
     });
 
@@ -26,6 +29,11 @@ document.addEventListener('DOMContentLoaded', function () {
         triSelect.addEventListener('change', function () {
             performSearch();
         });
+    }
+
+    function isFormatSelected(format) {
+        const selectedFormats = Array.from(selectedFormatsContainer.children).map(el => el.textContent);
+        return selectedFormats.includes(format);
     }
 
     function addSelectedFormat(format) {
