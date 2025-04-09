@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Formulaire avec Google Maps Autocomplete</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJf5q9usMkT0XpmXfQejiu30ZcHW4p9Jw&libraries=places&callback=initAutocomplete" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=Mettez-votre-cle-api-googlemap-ici&libraries=places&callback=initAutocomplete" async defer></script> <!-- Inserez votre clé api ici -->
     <script src="script.js" defer></script>
 </head>
 <body>

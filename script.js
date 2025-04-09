@@ -12,19 +12,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     toleranceSlider.addEventListener('input', function() {
         toleranceValue.textContent = toleranceSlider.value;
-        performSearch(); // Appeler la fonction pour mettre à jour les résultats
+        performSearch();
     });
 
     formatSelect.addEventListener('change', function () {
         const selectedFormat = formatSelect.value;
         if (selectedFormat && !isFormatSelected(selectedFormat)) {
             addSelectedFormat(selectedFormat);
-            formatSelect.value = ''; // Réinitialise la sélection
+            formatSelect.value = '';
             updateSelectedFormatsInput();
             performSearch();
         } else if (selectedFormat) {
             alert('Ce format a déjà été sélectionné.');
-            formatSelect.value = ''; // Réinitialise la sélection
+            formatSelect.value = '';
         }
     });
 

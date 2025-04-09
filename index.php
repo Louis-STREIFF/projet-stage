@@ -1,7 +1,6 @@
 <?php
 require_once 'airtable.php';
 
-// Appel initial sans filtres pour afficher tous les artistes
 $artistes = getArtistesFromAirtable();
 ?>
 
@@ -11,7 +10,7 @@ $artistes = getArtistesFromAirtable();
     <meta charset="UTF-8">
     <title>Filtrer et Trier les Artistes</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJf5q9usMkT0XpmXfQejiu30ZcHW4p9Jw&libraries=places&callback=initAutocomplete" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=Mettez-votre-cle-api-googlemap-ici&libraries=places&callback=initAutocomplete" async defer></script> <!-- Insérez votre clé api ici -->
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -26,7 +25,6 @@ $artistes = getArtistesFromAirtable();
         <input type="hidden" id="lng" name="lng">
     </div>
 
-    <!-- Ajouter un curseur pour la tolérance -->
     <div class="form-group">
         <label for="tolerance">Tolérance (km) : </label>
         <input type="range" id="tolerance" name="tolerance" min="1" max="100" step="1" value="1">
