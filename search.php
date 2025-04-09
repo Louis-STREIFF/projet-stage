@@ -6,15 +6,19 @@ $longitude = isset($_GET['lng']) ? floatval($_GET['lng']) : null;
 $selectedFormats = isset($_GET['selectedFormats']) ? explode(',', $_GET['selectedFormats']) : [];
 $bioKeywords = isset($_GET['bio']) ? strtolower($_GET['bio']) : '';
 $tri = $_GET['tri'] ?? '';
+$tolerance = isset($_GET['tolerance']) ? floatval($_GET['tolerance']) : 1;
 
 $filters = [];
 
 if ($latitude !== null && $longitude !== null) {
-    $tolerance = 1;
-    $latMin = $latitude - $tolerance;
-    $latMax = $latitude + $tolerance;
-    $lngMin = $longitude - $tolerance;
-    $lngMax = $longitude + $tolerance;
+    $earthRadius = 6371; // Rayon de la Terre en km
+    $latTolerance = $tolerance / $earthRadius;
+    $lngTolerance = $tolerance / ($earthRadius * cos(deg2rad($latitude)));
+
+    $latMin = $latitude - rad2deg($latTolerance);
+    $latMax = $latitude + rad2deg($latTolerance);
+    $lngMin = $longitude - rad2deg($lngTolerance);
+    $lngMax = $longitude + rad2deg($lngTolerance);
 
     $filters[] = "AND(
         VALUE(LEFT({Coordonnées}, FIND(',', {Coordonnées}) - 1)) >= $latMin,
@@ -23,6 +27,7 @@ if ($latitude !== null && $longitude !== null) {
         VALUE(TRIM(RIGHT({Coordonnées}, LEN({Coordonnées}) - FIND(',', {Coordonnées})))) <= $lngMax
     )";
 }
+
 
 if (!empty($selectedFormats)) {
     $formatConditions = array_map(function ($f) {

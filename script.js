@@ -1,10 +1,19 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const toleranceSlider = document.getElementById('tolerance');
+    const toleranceValue = document.getElementById('toleranceValue');
     const formatSelect = document.getElementById('format');
     const selectedFormatsContainer = document.getElementById('selected-formats');
     const selectedFormatsInput = document.getElementById('selectedFormatsInput');
     const bioInput = document.getElementById('bio');
     const triSelect = document.getElementById('tri');
     const lieuInput = document.getElementById('lieu');
+
+    toleranceValue.textContent = toleranceSlider.value;
+
+    toleranceSlider.addEventListener('input', function() {
+        toleranceValue.textContent = toleranceSlider.value;
+        performSearch(); // Appeler la fonction pour mettre à jour les résultats
+    });
 
     formatSelect.addEventListener('change', function () {
         const selectedFormat = formatSelect.value;
@@ -58,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const bio = bioInput ? bioInput.value : '';
         const tri = triSelect ? triSelect.value : '';
         const formats = selectedFormatsInput.value;
+        const tolerance = toleranceSlider.value;
 
         if (lieu && (!lat || !lng)) {
             const geocoder = new google.maps.Geocoder();
@@ -88,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const bio = bioInput ? bioInput.value : '';
         const tri = triSelect ? triSelect.value : '';
         const formats = selectedFormatsInput.value;
+        const tolerance = toleranceSlider.value;
 
         if (lieu) queryParams.append('lieu', lieu);
         if (bio) queryParams.append('bio', bio);
@@ -97,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
             queryParams.append('lat', lat);
             queryParams.append('lng', lng);
         }
+        queryParams.append('tolerance', tolerance);
 
         fetch('search.php?' + queryParams.toString())
             .then(response => response.text())

@@ -1,5 +1,7 @@
 <?php
 require_once 'airtable.php';
+
+// Appel initial sans filtres pour afficher tous les artistes
 $artistes = getArtistesFromAirtable();
 ?>
 
@@ -22,8 +24,15 @@ $artistes = getArtistesFromAirtable();
         <input type="text" id="lieu" name="lieu" value="<?php echo htmlspecialchars($_GET['lieu'] ?? ''); ?>">
         <input type="hidden" id="lat" name="lat">
         <input type="hidden" id="lng" name="lng">
-
     </div>
+
+    <!-- Ajouter un curseur pour la tolérance -->
+    <div class="form-group">
+        <label for="tolerance">Tolérance (km) : </label>
+        <input type="range" id="tolerance" name="tolerance" min="1" max="100" step="1" value="1">
+        <span id="toleranceValue">1</span> km
+    </div>
+
     <div class="form-group">
         <label for="format">Format :</label>
         <select id="format">
@@ -54,7 +63,6 @@ $artistes = getArtistesFromAirtable();
     <div class="form-group">
         <a href="ajouter_artiste.php" class="btn"> Ou alors voulez vous ajouter un artiste?</a>
     </div>
-
 </form>
 
 <div id="all-artistes">
@@ -82,6 +90,16 @@ $artistes = getArtistesFromAirtable();
         <p>Aucun artiste trouvé.</p>
     <?php endif; ?>
 </div>
+
+<script>
+    const toleranceSlider = document.getElementById('tolerance');
+    const toleranceValue = document.getElementById('toleranceValue');
+    toleranceValue.textContent = toleranceSlider.value;
+
+    toleranceSlider.addEventListener('input', function() {
+        toleranceValue.textContent = toleranceSlider.value;
+    });
+</script>
 
 </body>
 </html>
