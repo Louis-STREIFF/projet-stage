@@ -1,4 +1,5 @@
 <?php
+require_once 'config.php';
 require_once 'airtable.php';
 
 $latitude = isset($_GET['lat']) ? floatval($_GET['lat']) : null;
@@ -11,7 +12,7 @@ $tolerance = isset($_GET['tolerance']) ? floatval($_GET['tolerance']) : 1;
 $filters = [];
 
 if ($latitude !== null && $longitude !== null) {
-    $earthRadius = 6371; // Rayon de la Terre en km
+    $earthRadius = 6371;
     $latTolerance = $tolerance / $earthRadius;
     $lngTolerance = $tolerance / ($earthRadius * cos(deg2rad($latitude)));
 
@@ -27,7 +28,6 @@ if ($latitude !== null && $longitude !== null) {
         VALUE(TRIM(RIGHT({Coordonnées}, LEN({Coordonnées}) - FIND(',', {Coordonnées})))) <= $lngMax
     )";
 }
-
 
 if (!empty($selectedFormats)) {
     $formatConditions = array_map(function ($f) {
@@ -46,18 +46,9 @@ if (count($filters) > 1) {
     $finalFilter = $filters[0] ?? '';
 }
 
-$artistes = getArtistesFromAirtable($finalFilter, $tri);
-
-if ($tri === 'Nom prenom') {
-    usort($artistes, function ($a, $b) {
-        return strcmp($a['fields']['Nom'] ?? '', $b['fields']['Nom'] ?? '');
-    });
-} elseif ($tri === 'createdTime') {
-    usort($artistes, function ($a, $b) {
-        return strtotime($a['createdTime']) - strtotime($b['createdTime']);
-    });
-}
+$artistes = getArtistesFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFilter);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
