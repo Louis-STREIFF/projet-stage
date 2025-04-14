@@ -10,7 +10,18 @@ h1 {
     text-align: center;
     margin-top: 20px;
     font-size: 2em;
-    color: #f1c40f;
+    color: #ffffff;
+}
+
+a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #FFD700; /* Couleur au survol */
+    text-decoration: underline;
 }
 
 form {
@@ -104,13 +115,13 @@ button:hover {
     background-color: #e1b40e;
 }
 
-.artistes-list h3 a {
+.artists-list h3 a {
     color: #f1c40f;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-.artistes-list h3 a:hover {
+.artists-list h3 a:hover {
     color: #FFD700;
     text-decoration: underline;
 }

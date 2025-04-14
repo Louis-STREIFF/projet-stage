@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function () {
     const toleranceSlider = document.getElementById('tolerance');
     const toleranceValue = document.getElementById('toleranceValue');
@@ -10,10 +11,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     toleranceValue.textContent = toleranceSlider.value;
 
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
+    const debouncedOnInputChange = debounce(onInputChange, 1000);
 
     toleranceSlider.addEventListener('input', () => {
         toleranceValue.textContent = toleranceSlider.value;
-        onInputChange();
+        debouncedOnInputChange();
     });
 
     if (formatSelect) {
@@ -22,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (selectedFormat && !isFormatSelected(selectedFormat)) {
                 addSelectedFormat(selectedFormat);
                 formatSelect.value = ''; // Réinitialise la sélection
-                onInputChange();
+                debouncedOnInputChange();
             } else if (selectedFormat) {
                 alert('Ce format a déjà été sélectionné.');
                 formatSelect.value = ''; // Réinitialise la sélection
@@ -31,11 +41,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (bioInput) {
-        bioInput.addEventListener('input', onInputChange);
+        bioInput.addEventListener('input', debouncedOnInputChange);
     }
 
     if (triSelect) {
-        triSelect.addEventListener('change', onInputChange);
+        triSelect.addEventListener('change', debouncedOnInputChange);
     }
 
     function onInputChange() {

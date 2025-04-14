@@ -3,7 +3,7 @@
 require 'config.php';
 require_once 'airtable.php';
 
-$artistes = getArtistesFromAirtable($AirtableAPIKey, $BaseID, $TableName);
+$artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -58,39 +58,39 @@ $artistes = getArtistesFromAirtable($AirtableAPIKey, $BaseID, $TableName);
     </div>
 
     <div class="form-group">
-        <label for="bio">Mots dans la bio :</label>
+        <label for="bio">Keywords in bio :</label>
         <input type="text" id="bio" name="bio" value="<?php echo htmlspecialchars($_GET['bio'] ?? ''); ?>">
     </div>
     <div class="form-group">
-        <a href="ajouter_artiste.php" class="btn">Ou alors voulez-vous ajouter un artiste ?</a>
+        <a href="add_artists.php" class="btn">Or you want to add an artist ?</a>
     </div>
 </form>
 
 <div id="all-artistes">
-    <h2>Tous les Artistes</h2>
+    <h2>All Artists</h2>
     <?php if (!empty($artistes)): ?>
         <div class="artistes-list">
             <?php foreach ($artistes as $record): ?>
                 <?php
                 $fields = is_array($record) ? ($record['fields'] ?? []) : [];
-                $prenom = htmlspecialchars($fields['Prenom'] ?? 'Prénom non défini');
-                $nom = htmlspecialchars($fields['Nom'] ?? 'Nom non défini');
+                $firstname = htmlspecialchars($fields['Prenom'] ?? 'Prénom non défini');
+                $lastname = htmlspecialchars($fields['Nom'] ?? 'Nom non défini');
                 $bio = htmlspecialchars($fields['Bio'] ?? 'Bio non définie');
                 $imageUrl = htmlspecialchars($fields['Photo'][0]['url'] ?? '');
                 ?>
                 <div class="profile">
                     <?php if (!empty($imageUrl)): ?>
-                        <img src="<?= htmlspecialchars($imageUrl) ?>" alt="Image de <?= $prenom ?> <?= $nom ?>" class="artist-photo">
+                        <img src="<?= htmlspecialchars($imageUrl) ?>" alt="Image de <?= $firstname ?> <?= $lastname ?>" class="artist-photo">
                     <?php else: ?>
-                        <p>Aucune photo disponible.</p>
+                        <p>No photo.</p>
                     <?php endif; ?>
-                    <h3><?= $prenom ?> <?= $nom ?></h3>
+                    <h3><?= $firstname ?> <?= $lastname ?></h3>
                     <p><?= $bio ?></p>
                 </div>
             <?php endforeach; ?>
         </div>
     <?php else: ?>
-        <p>Aucun artiste trouvé.</p>
+        <p>No artist found.</p>
     <?php endif; ?>
 </div>
 

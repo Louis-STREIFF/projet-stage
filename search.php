@@ -46,7 +46,7 @@ if (count($filters) > 1) {
     $finalFilter = $filters[0] ?? '';
 }
 
-$artistes = getArtistesFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFilter);
+$artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFilter);
 ?>
 
 
@@ -75,7 +75,7 @@ $artistes = getArtistesFromAirtable($AirtableAPIKey, $BaseID, $TableName, $final
                     <img src="<?= $imageUrl ?>" alt="Image de <?= $prenom ?> <?= $nom ?>">
                 <?php endif; ?>
                 <h3>
-                    <a href="artiste.php?id=<?= htmlspecialchars($record['id']) ?>">
+                    <a href="artist.php?id=<?= htmlspecialchars($record['id']) ?>">
                         <?= $prenom ?> <?= $nom ?>
                     </a>
                 </h3>

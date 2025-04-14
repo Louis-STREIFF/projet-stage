@@ -5,7 +5,7 @@ $id = $_GET['id'] ?? null;
 $artiste = null;
 
 if ($id) {
-    $artiste = getArtisteById($id);
+    $artiste = getArtistsById($id);
 }
 
 if (!$artiste) {

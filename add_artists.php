@@ -3,8 +3,8 @@ require 'config.php';
 require_once 'airtable.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $prenom   = $_POST['prenom'] ?? '';
-    $nom      = $_POST['nom'] ?? '';
+    $prenom   = $_POST['firstname'] ?? '';
+    $nom      = $_POST['lastname'] ?? '';
     $bio      = $_POST['bio'] ?? '';
     $photoUrl = $_POST['photo_url'] ?? '';
     $adresse  = $_POST['lieu'] ?? '';
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     curl_close($ch);
 }
 
-$artistes = getArtistesFromAirtable($AirtableAPIKey, $BaseID, $TableName);
+$artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -130,7 +130,7 @@ $artistes = getArtistesFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 
 <h1>Formulaire d'Ajout d'Artiste</h1>
 
-<form method="POST" action="ajouter_artiste.php">
+<form method="POST" action="add_artists.php">
     <div class="form-group">
         <label for="lieu">Lieu :</label>
         <input type="text" id="lieu" name="lieu" value="<?php echo htmlspecialchars($_GET['lieu'] ?? ''); ?>" required>

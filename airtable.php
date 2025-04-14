@@ -1,7 +1,7 @@
 <?php
 require 'config.php';
 
-function getArtistesFromAirtable($AirtableAPIKey, $baseID, $tableName, $filter = '') {
+function getArtistsFromAirtable($AirtableAPIKey, $baseID, $tableName, $filter = '') {
     $url = "https://api.airtable.com/v0/$baseID/$tableName";
     if ($filter) {
         $url .= "?filterByFormula=" . urlencode($filter);
@@ -26,20 +26,20 @@ function getArtistesFromAirtable($AirtableAPIKey, $baseID, $tableName, $filter =
     return isset($data['records']) ? $data['records'] : [];
 }
 
-function getArtisteById($AirtableAPIKey, $BaseID, $TableName, $id) {
-
-    $url = "https://api.airtable.com/v0/" . $BaseID . "/" . $TableName . "?" . $query;
-
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "Authorization: Bearer " . $AirtableAPIKey,
-    ]);
-
-    $response = curl_exec($ch);
-    curl_close($ch);
-
-    return json_decode($response, true);
-}
+//function getArtistsById($AirtableAPIKey, $BaseID, $TableName, $id) {
+//
+//    $url = "https://api.airtable.com/v0/" . $BaseID . "/" . $TableName . "?" . $query;
+//
+//    $ch = curl_init($url);
+//    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+//    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+//        "Authorization: Bearer " . $AirtableAPIKey,
+//    ]);
+//
+//    $response = curl_exec($ch);
+//    curl_close($ch);
+//
+//    return json_decode($response, true);
+//}
 
 ?>
