@@ -6,16 +6,16 @@ $id = $_GET['id'] ?? null;
 $artiste = null;
 
 if ($id) {
-    $artiste = getArtistsById($AirtableAPIKey, $BaseID, $TableName, $id);
+    $artist = getArtistsById($AirtableAPIKey, $BaseID, $TableName, $id);
 }
 
 
-if (!$artiste) {
+if (!$artist) {
     echo "<p>Artiste introuvable.</p>";
     exit;
 }
 
-$fields = $artiste['fields'];
+$fields = $artist['fields'];
 $prenom = htmlspecialchars($fields['Prenom'] ?? 'Prénom non défini');
 $nom = htmlspecialchars($fields['Nom'] ?? 'Nom non défini');
 $bio = htmlspecialchars($fields['Bio complète'] ?? 'Bio non définie');

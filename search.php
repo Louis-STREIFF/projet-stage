@@ -46,7 +46,7 @@ if (count($filters) > 1) {
     $finalFilter = $filters[0] ?? '';
 }
 
-$artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFilter);
+$artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFilter);
 ?>
 
 
@@ -54,29 +54,29 @@ $artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalF
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Résultats de la recherche</title>
+    <title>Results</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<h1>Résultats de la recherche</h1>
+<h1>Results</h1>
 
-<?php if (!empty($artistes)): ?>
+<?php if (!empty($artists)): ?>
     <div class="artistes-list">
-        <?php foreach ($artistes as $record): ?>
+        <?php foreach ($artists as $record): ?>
             <?php
             $fields = $record['fields'];
-            $prenom = htmlspecialchars($fields['Prenom'] ?? 'Prénom non défini');
-            $nom = htmlspecialchars($fields['Nom'] ?? 'Nom non défini');
+            $firstname = htmlspecialchars($fields['Prenom'] ?? 'Prénom non défini');
+            $lastname = htmlspecialchars($fields['Nom'] ?? 'Nom non défini');
             $bio = htmlspecialchars($fields['Bio'] ?? 'Bio non définie');
             $imageUrl = htmlspecialchars($fields['Photo'][0]['url'] ?? '');
             ?>
             <div class="profile">
                 <?php if (!empty($imageUrl)): ?>
-                    <img src="<?= $imageUrl ?>" alt="Image de <?= $prenom ?> <?= $nom ?>">
+                    <img src="<?= $imageUrl ?>" alt="Image de <?= $firstname ?> <?= $lastname ?>">
                 <?php endif; ?>
                 <h3>
                     <a href="artist.php?id=<?= htmlspecialchars($record['id']) ?>">
-                        <?= $prenom ?> <?= $nom ?>
+                        <?= $firstname ?> <?= $lastname ?>
                     </a>
                 </h3>
                 <p><?= $bio ?></p>
@@ -84,7 +84,7 @@ $artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalF
         <?php endforeach; ?>
     </div>
 <?php else: ?>
-    <p>Aucun artiste trouvé.</p>
+    <p>No artist found.</p>
 <?php endif; ?>
 </body>
 </html>
