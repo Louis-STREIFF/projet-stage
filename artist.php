@@ -1,12 +1,14 @@
 <?php
+require_once 'config.php';
 require_once 'airtable.php';
 
 $id = $_GET['id'] ?? null;
 $artiste = null;
 
 if ($id) {
-    $artiste = getArtistsById($id);
+    $artiste = getArtistsById($AirtableAPIKey, $BaseID, $TableName, $id);
 }
+
 
 if (!$artiste) {
     echo "<p>Artiste introuvable.</p>";
