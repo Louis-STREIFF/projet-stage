@@ -3,7 +3,7 @@
 require 'config.php';
 require_once 'airtable.php';
 
-$artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
+$artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -38,9 +38,9 @@ $artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
             <option value="" disabled selected>Select a format</option>
             <?php
             $uniqueFormats = [];
-            foreach ($artistes as $record) {
-                if (isset($record['fields']['Format']) && is_array($record['fields']['Format'])) {
-                    foreach ($record['fields']['Format'] as $format) {
+            foreach ($artists as $record) {
+                if (isset($record['fields']['Type']) && is_array($record['fields']['Type'])) {
+                    foreach ($record['fields']['Type'] as $format) {
                         if (!in_array($format, $uniqueFormats)) {
                             $uniqueFormats[] = $format;
                         }
@@ -68,15 +68,16 @@ $artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 
 <div id="all-artistes">
     <h2>All Artists</h2>
-    <?php if (!empty($artistes)): ?>
+    <?php if (!empty($artists)): ?>
         <div class="artistes-list">
-            <?php foreach ($artistes as $record): ?>
+            <?php foreach ($artists as $record): ?>
                 <?php
                 $fields = is_array($record) ? ($record['fields'] ?? []) : [];
-                $firstname = htmlspecialchars($fields['Prenom'] ?? 'Prénom non défini');
-                $lastname = htmlspecialchars($fields['Nom'] ?? 'Nom non défini');
-                $bio = htmlspecialchars($fields['Bio'] ?? 'Bio non définie');
-                $imageUrl = htmlspecialchars($fields['Photo'][0]['url'] ?? '');
+                $firstname = htmlspecialchars($fields['First_Name'] ?? 'No Firstname');
+                $lastname = htmlspecialchars($fields['Last_Name'] ?? 'No Lastname');
+                $websiteurl = htmlspecialchars($fields['Website_URL'] ?? '');
+                $imageUrl = htmlspecialchars($fields['Cover_Picture'][0]['url'] ?? '');
+                $bio = htmlspecialchars($fields['Artist_Biography'] ?? 'No bio');
                 ?>
                 <div class="profile">
                     <?php if (!empty($imageUrl)): ?>
@@ -85,6 +86,7 @@ $artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
                         <p>No photo.</p>
                     <?php endif; ?>
                     <h3><?= $firstname ?> <?= $lastname ?></h3>
+                    <p><a href="https://<?= $websiteurl ?>" target="_blank"><?= $websiteurl ?></a></p>
                     <p><?= $bio ?></p>
                 </div>
             <?php endforeach; ?>

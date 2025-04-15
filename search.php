@@ -22,22 +22,22 @@ if ($latitude !== null && $longitude !== null) {
     $lngMax = $longitude + rad2deg($lngTolerance);
 
     $filters[] = "AND(
-        VALUE(LEFT({Coordonnées}, FIND(',', {Coordonnées}) - 1)) >= $latMin,
-        VALUE(LEFT({Coordonnées}, FIND(',', {Coordonnées}) - 1)) <= $latMax,
-        VALUE(TRIM(RIGHT({Coordonnées}, LEN({Coordonnées}) - FIND(',', {Coordonnées})))) >= $lngMin,
-        VALUE(TRIM(RIGHT({Coordonnées}, LEN({Coordonnées}) - FIND(',', {Coordonnées})))) <= $lngMax
+        VALUE(LEFT({GPS_Coordinates}, FIND(',', {GPS_Coordinates}) - 1)) >= $latMin,
+        VALUE(LEFT({GPS_Coordinates}, FIND(',', {GPS_Coordinates}) - 1)) <= $latMax,
+        VALUE(TRIM(RIGHT({GPS_Coordinates}, LEN({GPS_Coordinates}) - FIND(',', {GPS_Coordinates})))) >= $lngMin,
+        VALUE(TRIM(RIGHT({GPS_Coordinates}, LEN({GPS_Coordinates}) - FIND(',', {GPS_Coordinates})))) <= $lngMax
     )";
 }
 
 if (!empty($selectedFormats)) {
     $formatConditions = array_map(function ($f) {
-        return "FIND(LOWER('$f'), LOWER({Format})) > 0";
+        return "FIND(LOWER('$f'), LOWER({Type})) > 0";
     }, $selectedFormats);
     $filters[] = "AND(" . implode(",", $formatConditions) . ")";
 }
 
 if (!empty($bioKeywords)) {
-    $filters[] = "FIND(LOWER('$bioKeywords'), LOWER({Bio})) > 0";
+    $filters[] = "FIND(LOWER('$bioKeywords'), LOWER({Artist_Biography})) > 0";
 }
 
 if (count($filters) > 1) {
@@ -65,10 +65,10 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
         <?php foreach ($artists as $record): ?>
             <?php
             $fields = $record['fields'];
-            $firstname = htmlspecialchars($fields['Prenom'] ?? 'Prénom non défini');
-            $lastname = htmlspecialchars($fields['Nom'] ?? 'Nom non défini');
-            $bio = htmlspecialchars($fields['Bio'] ?? 'Bio non définie');
-            $imageUrl = htmlspecialchars($fields['Photo'][0]['url'] ?? '');
+            $firstname = htmlspecialchars($fields['First_Name'] ?? 'No First Name');
+            $lastname = htmlspecialchars($fields['Last_Name'] ?? 'No Last Name');
+            $bio = htmlspecialchars($fields['Artist_Biography'] ?? 'No Bio');
+            $imageUrl = htmlspecialchars($fields['Cover_Picture'][0]['url'] ?? '');
             ?>
             <div class="profile">
                 <?php if (!empty($imageUrl)): ?>
