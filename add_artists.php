@@ -18,14 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $formats = $decoded;
         }
     }
-    $validFormats = ['spectacles', 'déambulatoires', 'team building', 'conférences', 'plénières', 'séminaires', 'conventions'];
-    $formatArray = array_filter($formats, function($format) use ($validFormats) {
-        return in_array(strtolower($format), $validFormats);
-    });
-    if (empty($formatArray)) {
-        $formatArray = ['spectacles'];
-    }
-    $formatArray = array_values($formatArray);
+    $formatArray = array_values($formats);
 
     $coordinates = null;
     if ($latitude !== null && $longitude !== null) {
@@ -63,11 +56,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Formulaire d'Ajout d'Artiste</title>
+    <title>Add Artist Form</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $MapAPIKey; ?>&libraries=places&callback=initAutocomplete" async defer></script>
     <script defer>
@@ -111,7 +105,7 @@ $artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
                 autocomplete.addListener('place_changed', function () {
                     const place = autocomplete.getPlace();
                     if (!place.geometry) {
-                        console.log("Aucune géométrie disponible pour le lieu saisi.");
+                        console.log("Error.");
                         return;
                     }
                     const lat = place.geometry.location.lat();
@@ -128,24 +122,24 @@ $artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 </head>
 <body>
 
-<h1>Formulaire d'Ajout d'Artiste</h1>
+<h1>Enter your details</h1>
 
 <form method="POST" action="add_artists.php">
     <div class="form-group">
-        <label for="lieu">Lieu :</label>
+        <label for="lieu">Place :</label>
         <input type="text" id="lieu" name="lieu" value="<?php echo htmlspecialchars($_GET['lieu'] ?? ''); ?>" required>
         <input type="hidden" id="lat" name="lat">
         <input type="hidden" id="lng" name="lng">
     </div>
 
     <div class="form-group">
-        <label for="prenom">Prénom :</label>
-        <input type="text" id="prenom" name="prenom" required>
+        <label for="firstname">Firstname :</label>
+        <input type="text" id="firstname" name="firstname" required>
     </div>
 
     <div class="form-group">
-        <label for="nom">Nom :</label>
-        <input type="text" id="nom" name="nom" required>
+        <label for="lastname">Lastname :</label>
+        <input type="text" id="lastname" name="lastname" required>
     </div>
 
     <div class="form-group">
@@ -154,9 +148,9 @@ $artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
     </div>
 
     <div class="form-group">
-        <label for="format">Format :</label>
+        <label for="format">Formats :</label>
         <select id="format" name="formats[]">
-            <option value="" disabled selected>Choisissez un format</option>
+            <option value="" disabled selected>Choose your formats</option>
             <?php
             $uniqueFormats = [];
             foreach ($artistes as $record) {
@@ -179,7 +173,7 @@ $artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
     </div>
 
     <div class="form-group">
-        <button type="submit">Ajouter l'Artiste</button>
+        <button type="submit">Add Artist</button>
     </div>
 
 </form>

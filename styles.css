@@ -20,7 +20,7 @@ a {
 }
 
 a:hover {
-    color: #FFD700; /* Couleur au survol */
+    color: #FFD700;
     text-decoration: underline;
 }
 

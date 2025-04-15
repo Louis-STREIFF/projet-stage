@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const selectedFormat = formatSelect.value;
             if (selectedFormat && !isFormatSelected(selectedFormat)) {
                 addSelectedFormat(selectedFormat);
-                formatSelect.value = ''; // Réinitialise la sélection
+                formatSelect.value = '';
                 debouncedOnInputChange();
             } else if (selectedFormat) {
-                alert('Ce format a déjà été sélectionné.');
-                formatSelect.value = ''; // Réinitialise la sélection
+                alert('Already selected.');
+                formatSelect.value = '';
             }
         });
     }
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('lng').value = resolvedLng;
                 fetchResults(resolvedLat, resolvedLng);
             } else {
-                console.warn('Géocodification échouée :', status);
+                console.warn('Error:', status);
                 fetchResults(null, null);
             }
         });
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('all-artistes').innerHTML = html;
             })
             .catch(error => {
-                console.error('Erreur lors de la recherche :', error);
+                console.error('Error', error);
             });
     }
 
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('lng').value = lng;
                 performSearch(lat, lng);
             } else {
-                console.log("Aucune géométrie disponible pour le lieu saisi.");
+                console.log("No place found.");
             }
         });
     };
