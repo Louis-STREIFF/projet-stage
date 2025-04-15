@@ -1,6 +1,6 @@
 <?php
-require_once 'config.php';
-require_once 'airtable.php';
+require __DIR__ .'/../config.php';
+require_once __DIR__ .'/../airtable.php';
 
 $latitude = isset($_GET['lat']) ? floatval($_GET['lat']) : null;
 $longitude = isset($_GET['lng']) ? floatval($_GET['lng']) : null;
@@ -55,7 +55,7 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
 <head>
     <meta charset="UTF-8">
     <title>Results</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
 <h1>Results</h1>

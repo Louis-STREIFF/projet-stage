@@ -43,5 +43,4 @@ function getArtistsById($apiKey, $baseId, $tableName, $recordId) {
     return $data;
 }
 
-
 ?>

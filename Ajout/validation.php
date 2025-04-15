@@ -1,9 +1,8 @@
 <?php
-$apiKey = "patVEdnsGMYLXNIiY.7d694dfde54904d35d5d22b3994bbaa86c6d5e3490e5e1eeb991715a5856cfba"; // Remplacez par votre clé API
-$baseId = "appeSB6VXdImy374l";
+require __DIR__ . "/../config.php";
 
-$tableAttenteUrl = "https://api.airtable.com/v0/$baseId/Attente";
-$tableArtistesUrl = "https://api.airtable.com/v0/$baseId/Artistes";
+$tableAttenteUrl = "https://api.airtable.com/v0/$baseId/Waiting";
+$PrincipalsTableUrl = "https://api.airtable.com/v0/$baseId/$TableName";
 
 $options = [
     "http" => [
@@ -15,21 +14,21 @@ $response = file_get_contents($tableAttenteUrl, false, $context);
 $data = json_decode($response, true);
 
 foreach ($data['records'] as $record) {
-    if (isset($record['fields']['Validé']) && $record['fields']['Validé'] === true) {
+    if (isset($record['fields']['Validation']) && $record['fields']['Validation'] === true) {
         $fields = [
-            'Prenom' => $record['fields']['Prenom'],
-            'Nom' => $record['fields']['Nom'],
-            'Bio' => $record['fields']['Bio'],
-            'Format' => $record['fields']['Format'],
-            'Adresse' => $record['fields']['Adresse'],
-            'Coordonnées' => $record['fields']['Coordonnées']
+            'Firstname' => $record['fields']['First_Name'],
+            'Lastname' => $record['fields']['Last_Name'],
+            'Bio' => $record['fields']['Artist_Biography'],
+            'Format' => $record['fields']['Type'],
+            'Residences' => $record['fields']['Location_Residence'],
+            'Coordinates' => $record['fields']['GPS_Coordinates'],
         ];
 
         $dataToInsert = [
             "fields" => $fields
         ];
 
-        $ch = curl_init($tableArtistesUrl);
+        $ch = curl_init($PrincipalsTableUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "Authorization: Bearer $apiKey",
@@ -53,10 +52,10 @@ foreach ($data['records'] as $record) {
             curl_exec($ch);
             curl_close($ch);
         } else {
-            echo "Erreur d'insertion pour l'enregistrement ID: " . $record['id'];
+            echo "Error : ID: " . $record['id'];
         }
     }
 }
 
-echo "Transfert terminé.";
+echo "Transfert end.";
 ?>

@@ -27,7 +27,7 @@ $imageUrl = htmlspecialchars($fields['Photo'][0]['url'] ?? '');
 <head>
     <meta charset="UTF-8">
     <title><?= $prenom ?> <?= $nom ?></title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
 <div class="profile">

@@ -1,7 +1,7 @@
 <?php
 
-require 'config.php';
-require_once 'airtable.php';
+include __DIR__ . '/../config.php';
+require_once __DIR__ . '/../airtable.php';
 
 $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 ?>
@@ -10,7 +10,7 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 <head>
     <meta charset="UTF-8">
     <title>Artist Filter</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
     <script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $MapAPIKey; ?>&libraries=places&callback=initAutocomplete" async defer></script>
     <script src="script.js" defer></script>
 </head>
@@ -62,7 +62,7 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
         <input type="text" id="bio" name="bio" value="<?php echo htmlspecialchars($_GET['bio'] ?? ''); ?>">
     </div>
     <div class="form-group">
-        <a href="add_artists.php" class="btn">Or you want to add an artist ?</a>
+        <a href="../Ajout/add_artists.php" class="btn">Or you want to add an artist ?</a>
     </div>
 </form>
 

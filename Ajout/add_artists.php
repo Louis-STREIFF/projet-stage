@@ -1,15 +1,16 @@
 <?php
-require 'config.php';
-require_once 'airtable.php';
+require __DIR__ . '/../config.php';
+require_once __DIR__ . '/../airtable.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $prenom   = $_POST['firstname'] ?? '';
     $nom      = $_POST['lastname'] ?? '';
     $bio      = $_POST['bio'] ?? '';
     $photoUrl = $_POST['photo_url'] ?? '';
-    $adresse  = $_POST['lieu'] ?? '';
+    $adress  = $_POST['lieu'] ?? '';
     $latitude = $_POST['lat'] ?? null;
     $longitude = $_POST['lng'] ?? null;
+    $birthday = $_POST['birthday'] ?? null;
 
     $formats = [];
     if (!empty($_POST['selectedFormats'])) {
@@ -27,16 +28,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $data = [
         'fields' => [
-            'Prenom'      => $prenom,
-            'Nom'         => $nom,
-            'Bio'         => $bio,
-            'Format'      => $formatArray,
-            'Adresse'     => $adresse,
-            'Coordonnées' => $coordinates,
+            'First_Name'      => $prenom,
+            'Last_Name'         => $nom,
+            'Artist_Biography'         => $bio,
+            'Type'      => $formatArray,
+            'Location_Residence'     => $adress,
+            'GPS_Coordinates' => $coordinates,
+            'Birthday' => $birthday,
         ]
     ];
 
-    $url = "https://api.airtable.com/v0/$BaseID/Attente";
+    $url = "https://api.airtable.com/v0/$BaseID/Waiting";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -49,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($response === false) {
         echo "Erreur cURL : " . curl_error($ch);
     } else {
-        echo "Réponse de l'API : " . $response;
+        echo "réponse de l'API : " . $response;
     }
     curl_close($ch);
 }
@@ -62,64 +64,10 @@ $artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 <head>
     <meta charset="UTF-8">
     <title>Add Artist Form</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles.css">
     <script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $MapAPIKey; ?>&libraries=places&callback=initAutocomplete" async defer></script>
-    <script defer>
-        document.addEventListener('DOMContentLoaded', function () {
+    <script src="script.js" defer></script>
 
-            const selectElement = document.getElementById('format');
-            const selectedFormatsContainer = document.getElementById('selected-formats');
-            const hiddenInput = document.getElementById('selectedFormatsInput');
-            const selectedFormats = [];
-
-            selectElement.addEventListener('change', function () {
-                const format = this.value;
-                if (format && !selectedFormats.includes(format)) {
-                    selectedFormats.push(format);
-                    addFormatTag(format);
-                    updateSelectedFormatsInput();
-                }
-                this.selectedIndex = 0;
-            });
-
-            function addFormatTag(format) {
-                const formatElement = document.createElement('div');
-                formatElement.className = 'selected-format';
-                formatElement.textContent = format;
-                formatElement.style.cssText = 'display: inline-block; margin: 4px; padding: 6px 10px; background-color: #eee; border-radius: 20px; cursor: pointer;';
-                formatElement.addEventListener('click', function () {
-                    selectedFormatsContainer.removeChild(formatElement);
-                    const index = selectedFormats.indexOf(format);
-                    if (index !== -1) selectedFormats.splice(index, 1);
-                    updateSelectedFormatsInput();
-                });
-                selectedFormatsContainer.appendChild(formatElement);
-            }
-
-            function updateSelectedFormatsInput() {
-                hiddenInput.value = JSON.stringify(selectedFormats);
-            }
-
-            window.initAutocomplete = function () {
-                const autocomplete = new google.maps.places.Autocomplete(document.getElementById('lieu'));
-                autocomplete.addListener('place_changed', function () {
-                    const place = autocomplete.getPlace();
-                    if (!place.geometry) {
-                        console.log("Error.");
-                        return;
-                    }
-                    const lat = place.geometry.location.lat();
-                    const lng = place.geometry.location.lng();
-                    document.getElementById('lat').value = lat;
-                    document.getElementById('lng').value = lng;
-                });
-            };
-            window.onload = function () {
-                initAutocomplete();
-            };
-        });
-    </script>
-</head>
 <body>
 
 <h1>Enter your details</h1>
@@ -148,14 +96,19 @@ $artistes = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
     </div>
 
     <div class="form-group">
+        <label for="date">Type your birthday :</label>
+        <input type="date" id="date" name="date">
+    </div>
+
+    <div class="form-group">
         <label for="format">Formats :</label>
         <select id="format" name="formats[]">
             <option value="" disabled selected>Choose your formats</option>
             <?php
             $uniqueFormats = [];
             foreach ($artistes as $record) {
-                if (isset($record['fields']['Format']) && is_array($record['fields']['Format'])) {
-                    foreach ($record['fields']['Format'] as $format) {
+                if (isset($record['fields']['Type']) && is_array($record['fields']['Type'])) {
+                    foreach ($record['fields']['Type'] as $format) {
                         if (!in_array($format, $uniqueFormats)) {
                             $uniqueFormats[] = $format;
                         }
