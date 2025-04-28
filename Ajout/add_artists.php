@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $adress  = $_POST['lieu'] ?? '';
     $latitude = $_POST['lat'] ?? null;
     $longitude = $_POST['lng'] ?? null;
-    $birthday = $_POST['birthday'] ?? null;
+    $birthday = $_POST['date'] ?? null;
 
     $formats = [];
     if (!empty($_POST['selectedFormats'])) {
@@ -31,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'First_Name'      => $prenom,
             'Last_Name'         => $nom,
             'Artist_Biography'         => $bio,
-            'Type'      => $formatArray,
             'Location_Residence'     => $adress,
             'GPS_Coordinates' => $coordinates,
             'Birthday' => $birthday,

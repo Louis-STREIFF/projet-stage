@@ -64,12 +64,18 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
             $lastName = esc_html($fields['Last_Name'] ?? '');
             $bio = esc_html($fields['Artist_Biography'] ?? '');
             $imgUrl = isset($fields['Cover_Picture'][0]['url']) ? esc_url($fields['Cover_Picture'][0]['url']) : '';
+
+            $artistSlug = sanitize_title($firstName . '-' . $lastName);
             ?>
             <div class="profile">
                 <?php if ($imgUrl) : ?>
                     <img src="<?php echo $imgUrl; ?>" alt="Photo of <?php echo "$firstName $lastName"; ?>">
                 <?php endif; ?>
-                <h3><?php echo "$firstName $lastName"; ?></h3>
+                <h3>
+                    <a href="<?php echo site_url('/artist/' . $artistSlug); ?>">
+                        <?php echo "$firstName $lastName"; ?>
+                    </a>
+                </h3>
                 <p><?php echo $bio; ?></p>
             </div>
         <?php endforeach; ?>
@@ -77,3 +83,4 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
         <p>No artists found for your search.</p>
     <?php endif; ?>
 </div>
+

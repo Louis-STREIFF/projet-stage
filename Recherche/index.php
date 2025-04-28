@@ -53,30 +53,6 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
         </div>
     </form>
 
-    <div id="search-results">
-        <?php if (!empty($artists)): ?>
-            <div class="artistes-list">
-                <?php foreach ($artists as $record):
-                    $f = $record['fields'];
-                    $first = esc_html($f['First_Name'] ?? '');
-                    $last  = esc_html($f['Last_Name']  ?? '');
-                    $bio   = esc_html($f['Artist_Biography'] ?? '');
-                    $img   = esc_url($f['Cover_Picture'][0]['url'] ?? '');
-                    ?>
-                    <div class="profile">
-                        <?php if ($img): ?>
-                            <img src="<?php echo $img; ?>" alt="Photo de <?php echo "$first $last"; ?>">
-                        <?php endif; ?>
-                        <h3><?php echo "$first $last"; ?></h3>
-                        <p><?php echo $bio; ?></p>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <p>Aucun artiste trouvé.</p>
-        <?php endif; ?>
-    </div>
-
 </div>
 
 <script async defer
