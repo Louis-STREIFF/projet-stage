@@ -1,13 +1,16 @@
 <?php
-require __DIR__ .'/../config.php';
-require_once __DIR__ .'/../airtable.php';
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-$latitude = isset($_GET['lat']) ? floatval($_GET['lat']) : null;
-$longitude = isset($_GET['lng']) ? floatval($_GET['lng']) : null;
-$selectedFormats = isset($_GET['selectedFormats']) ? explode(',', $_GET['selectedFormats']) : [];
-$bioKeywords = isset($_GET['bio']) ? strtolower($_GET['bio']) : '';
-$tri = $_GET['tri'] ?? '';
-$tolerance = isset($_GET['tolerance']) ? floatval($_GET['tolerance']) : 1;
+require plugin_dir_path(__FILE__) . '../config.php';
+require_once plugin_dir_path(__FILE__) . '../airtable.php';
+
+$latitude        = (!empty($_GET['lat'])) ? floatval($_GET['lat']) : null;
+$longitude       = (!empty($_GET['lng'])) ? floatval($_GET['lng']) : null;
+$tolerance       = isset($_GET['tolerance']) ? floatval($_GET['tolerance']) : 1;
+$bioKeywords     = isset($_GET['bio']) ? sanitize_text_field($_GET['bio']) : '';
+$selectedFormats = isset($_GET['selectedFormats']) ? array_map('sanitize_text_field', explode(',', $_GET['selectedFormats'])) : [];
 
 $filters = [];
 
@@ -22,69 +25,55 @@ if ($latitude !== null && $longitude !== null) {
     $lngMax = $longitude + rad2deg($lngTolerance);
 
     $filters[] = "AND(
-        VALUE(LEFT({GPS_Coordinates}, FIND(',', {GPS_Coordinates}) - 1)) >= $latMin,
-        VALUE(LEFT({GPS_Coordinates}, FIND(',', {GPS_Coordinates}) - 1)) <= $latMax,
+        VALUE(LEFT({GPS_Coordinates}, FIND(',', {GPS_Coordinates})-1)) >= $latMin,
+        VALUE(LEFT({GPS_Coordinates}, FIND(',', {GPS_Coordinates})-1)) <= $latMax,
         VALUE(TRIM(RIGHT({GPS_Coordinates}, LEN({GPS_Coordinates}) - FIND(',', {GPS_Coordinates})))) >= $lngMin,
         VALUE(TRIM(RIGHT({GPS_Coordinates}, LEN({GPS_Coordinates}) - FIND(',', {GPS_Coordinates})))) <= $lngMax
     )";
 }
 
 if (!empty($selectedFormats)) {
-    $formatConditions = array_map(function ($f) {
-        return "FIND(LOWER('$f'), LOWER({Type})) > 0";
-    }, $selectedFormats);
-    $filters[] = "AND(" . implode(",", $formatConditions) . ")";
+    $formatConditions = [];
+    foreach ($selectedFormats as $format) {
+        $f = strtolower($format);
+        $formatConditions[] = "IF(FIND(LOWER('$f'), LOWER({Type})), TRUE(), FALSE())";
+    }
+    $filters[] = 'AND(' . implode(',', $formatConditions) . ')';
 }
 
 if (!empty($bioKeywords)) {
-    $filters[] = "FIND(LOWER('$bioKeywords'), LOWER({Artist_Biography})) > 0";
+    $bio = strtolower($bioKeywords);
+    $filters[] = "IF(FIND(LOWER('$bio'), LOWER({Artist_Biography})), TRUE(), FALSE())";
 }
 
+$finalFilter = '';
 if (count($filters) > 1) {
-    $finalFilter = "AND(" . implode(",", $filters) . ")";
-} else {
-    $finalFilter = $filters[0] ?? '';
+    $finalFilter = 'AND(' . implode(',', $filters) . ')';
+} elseif (count($filters) === 1) {
+    $finalFilter = $filters[0];
 }
 
 $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFilter);
+
 ?>
-
-
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Results</title>
-    <link rel="stylesheet" href="../styles.css">
-</head>
-<body>
-<h1>Results</h1>
-
-<?php if (!empty($artists)): ?>
-    <div class="artistes-list">
-        <?php foreach ($artists as $record): ?>
-            <?php
+<div class="artists-list">
+    <?php if (!empty($artists)) : ?>
+        <?php foreach ($artists as $record) :
             $fields = $record['fields'];
-            $firstname = htmlspecialchars($fields['First_Name'] ?? 'No First Name');
-            $lastname = htmlspecialchars($fields['Last_Name'] ?? 'No Last Name');
-            $bio = htmlspecialchars($fields['Artist_Biography'] ?? 'No Bio');
-            $imageUrl = htmlspecialchars($fields['Cover_Picture'][0]['url'] ?? '');
+            $firstName = esc_html($fields['First_Name'] ?? '');
+            $lastName = esc_html($fields['Last_Name'] ?? '');
+            $bio = esc_html($fields['Artist_Biography'] ?? '');
+            $imgUrl = isset($fields['Cover_Picture'][0]['url']) ? esc_url($fields['Cover_Picture'][0]['url']) : '';
             ?>
             <div class="profile">
-                <?php if (!empty($imageUrl)): ?>
-                    <img src="<?= $imageUrl ?>" alt="Image de <?= $firstname ?> <?= $lastname ?>">
+                <?php if ($imgUrl) : ?>
+                    <img src="<?php echo $imgUrl; ?>" alt="Photo of <?php echo "$firstName $lastName"; ?>">
                 <?php endif; ?>
-                <h3>
-                    <a href="artist.php?id=<?= htmlspecialchars($record['id']) ?>">
-                        <?= $firstname ?> <?= $lastname ?>
-                    </a>
-                </h3>
-                <p><?= $bio ?></p>
+                <h3><?php echo "$firstName $lastName"; ?></h3>
+                <p><?php echo $bio; ?></p>
             </div>
         <?php endforeach; ?>
-    </div>
-<?php else: ?>
-    <p>No artist found.</p>
-<?php endif; ?>
-</body>
-</html>
+    <?php else : ?>
+        <p>No artists found for your search.</p>
+    <?php endif; ?>
+</div>

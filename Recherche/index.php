@@ -1,109 +1,85 @@
 <?php
 
-include __DIR__ . '/../config.php';
-require_once __DIR__ . '/../airtable.php';
+require plugin_dir_path(__FILE__) . '../config.php';
+require_once plugin_dir_path(__FILE__) . '../airtable.php';
 
 $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Artist Filter</title>
-    <link rel="stylesheet" href="../styles.css">
-    <script src="https://maps.googleapis.com/maps/api/js?key=<?php echo $MapAPIKey; ?>&libraries=places&callback=initAutocomplete" async defer></script>
-    <script src="script.js" defer></script>
-</head>
-<body>
 
-<h1>Artist Filter</h1>
+<div class="artist-search-container">
+    <h1>Artist Filter</h1>
 
-<form method="GET" action="search.php" id="searchForm" onsubmit="handleFormSubmit(event)">
+    <form action="<?php echo site_url('/resultat-recherche/'); ?>" method="GET">
     <div class="form-group">
-        <label for="lieu">Lieu :</label>
-        <input type="text" id="lieu" name="lieu" value="<?php echo htmlspecialchars($_GET['lieu'] ?? ''); ?>">
-        <input type="hidden" id="lat" name="lat">
-        <input type="hidden" id="lng" name="lng">
-    </div>
+            <label for="lieu">Lieu :</label>
+            <input type="text" id="lieu" name="lieu" value="<?php echo esc_attr($_GET['lieu'] ?? ''); ?>" autocomplete="off">
+            <input type="hidden" id="lat" name="lat">
+            <input type="hidden" id="lng" name="lng">
+        </div>
 
-    <div class="form-group">
-        <label for="tolerance">Tolérance (km) :</label>
-        <input type="range" id="tolerance" name="tolerance" min="1" max="100" step="1" value="1">
-        <span id="toleranceValue">1</span> km
-    </div>
+        <div class="form-group">
+            <label for="tolerance">Tolérance (km) :</label>
+            <input type="range" id="tolerance" name="tolerance" min="1" max="100" step="1" value="1">
+            <span id="toleranceValue">1</span> km
+        </div>
 
-    <div class="form-group">
-        <label for="format">Format :</label>
-        <select id="format" name="formats[]">
-            <option value="" disabled selected>Select a format</option>
-            <?php
-            $uniqueFormats = [];
-            foreach ($artists as $record) {
-                if (isset($record['fields']['Type']) && is_array($record['fields']['Type'])) {
-                    foreach ($record['fields']['Type'] as $format) {
-                        if (!in_array($format, $uniqueFormats)) {
-                            $uniqueFormats[] = $format;
+        <div class="form-group">
+            <label for="format">Format :</label>
+            <select id="format" name="selectedFormats[]">
+                <option value="" disabled selected>Select a format</option>
+                <?php foreach (array_unique(call_user_func(function() use ($artists) {
+                    $formats = [];
+                    foreach ($artists as $rec) {
+                        if (!empty($rec['fields']['Type']) && is_array($rec['fields']['Type'])) {
+                            $formats = array_merge($formats, $rec['fields']['Type']);
                         }
                     }
-                }
-            }
-            foreach ($uniqueFormats as $format) {
-                $safeFormat = htmlspecialchars($format);
-                echo "<option value=\"$safeFormat\">$safeFormat</option>";
-            }
-            ?>
-        </select>
-        <div id="selected-formats"></div>
-        <input type="hidden" id="selectedFormatsInput" name="selectedFormats">
-    </div>
-
-    <div class="form-group">
-        <label for="bio">Keywords in bio :</label>
-        <input type="text" id="bio" name="bio" value="<?php echo htmlspecialchars($_GET['bio'] ?? ''); ?>">
-    </div>
-    <div class="form-group">
-        <a href="../Ajout/add_artists.php" class="btn">Or you want to add an artist ?</a>
-    </div>
-</form>
-
-<div id="all-artistes">
-    <h2>All Artists</h2>
-    <?php if (!empty($artists)): ?>
-        <div class="artistes-list">
-            <?php foreach ($artists as $record): ?>
-                <?php
-                $fields = is_array($record) ? ($record['fields'] ?? []) : [];
-                $firstname = htmlspecialchars($fields['First_Name'] ?? 'No Firstname');
-                $lastname = htmlspecialchars($fields['Last_Name'] ?? 'No Lastname');
-                $websiteurl = htmlspecialchars($fields['Website_URL'] ?? '');
-                $imageUrl = htmlspecialchars($fields['Cover_Picture'][0]['url'] ?? '');
-                $bio = htmlspecialchars($fields['Artist_Biography'] ?? 'No bio');
-                ?>
-                <div class="profile">
-                    <?php if (!empty($imageUrl)): ?>
-                        <img src="<?= htmlspecialchars($imageUrl) ?>" alt="Image de <?= $firstname ?> <?= $lastname ?>" class="artist-photo">
-                    <?php else: ?>
-                        <p>No photo.</p>
-                    <?php endif; ?>
-                    <h3><?= $firstname ?> <?= $lastname ?></h3>
-                    <p><a href="https://<?= $websiteurl ?>" target="_blank"><?= $websiteurl ?></a></p>
-                    <p><?= $bio ?></p>
-                </div>
-            <?php endforeach; ?>
+                    return $formats;
+                })) as $fmt): ?>
+                    <option value="<?php echo esc_attr($fmt); ?>"><?php echo esc_html($fmt); ?></option>
+                <?php endforeach; ?>
+            </select>
+            <div id="selected-formats"></div>
+            <input type="hidden" id="selectedFormatsInput" name="selectedFormats">
         </div>
-    <?php else: ?>
-        <p>No artist found.</p>
-    <?php endif; ?>
+
+        <div class="form-group">
+            <label for="bio">Keywords in bio :</label>
+            <input type="text" id="bio" name="bio" value="<?php echo esc_attr($_GET['bio'] ?? ''); ?>">
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn">Rechercher</button>
+        </div>
+    </form>
+
+    <div id="search-results">
+        <?php if (!empty($artists)): ?>
+            <div class="artistes-list">
+                <?php foreach ($artists as $record):
+                    $f = $record['fields'];
+                    $first = esc_html($f['First_Name'] ?? '');
+                    $last  = esc_html($f['Last_Name']  ?? '');
+                    $bio   = esc_html($f['Artist_Biography'] ?? '');
+                    $img   = esc_url($f['Cover_Picture'][0]['url'] ?? '');
+                    ?>
+                    <div class="profile">
+                        <?php if ($img): ?>
+                            <img src="<?php echo $img; ?>" alt="Photo de <?php echo "$first $last"; ?>">
+                        <?php endif; ?>
+                        <h3><?php echo "$first $last"; ?></h3>
+                        <p><?php echo $bio; ?></p>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
+            <p>Aucun artiste trouvé.</p>
+        <?php endif; ?>
+    </div>
+
 </div>
 
-<script>
-    const toleranceSlider = document.getElementById('tolerance');
-    const toleranceValue = document.getElementById('toleranceValue');
-    toleranceValue.textContent = toleranceSlider.value;
-    toleranceSlider.addEventListener('input', function() {
-        toleranceValue.textContent = toleranceSlider.value;
-    });
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=<?php echo esc_js($MapAPIKey); ?>&libraries=places&callback=initAutocomplete">
 </script>
 
-</body>
-</html>

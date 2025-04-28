@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
     const toleranceSlider = document.getElementById('tolerance');
     const toleranceValue = document.getElementById('toleranceValue');
@@ -13,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function debounce(func, wait) {
         let timeout;
-        return function(...args) {
+        return function (...args) {
             clearTimeout(timeout);
             timeout = setTimeout(() => func.apply(this, args), wait);
         };
@@ -48,45 +47,58 @@ document.addEventListener('DOMContentLoaded', function () {
         triSelect.addEventListener('change', debouncedOnInputChange);
     }
 
-    function onInputChange() {
-        performSearch();
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        updateSelectedFormatsInput();
+
+        const queryParams = new URLSearchParams({
+            lieu: lieuInput.value,
+            bio: bioInput ? bioInput.value : '',
+            tri: triSelect ? triSelect.value : '',
+            selectedFormats: selectedFormatsInput.value,
+            tolerance: toleranceSlider.value,
+            lat: document.getElementById('lat').value,
+            lng: document.getElementById('lng').value
+        });
+
+        const url = `${monPluginData.siteUrl}/resultat-recherche/?${queryParams.toString()}`;
+        console.log("Redirection vers :", url);
+        window.location.href = url;
     }
 
     function isFormatSelected(format) {
-        return Array.from(selectedFormatsContainer.children)
-            .some(el => el.textContent === format);
+        return Array.from(selectedFormatsContainer.children).some(el => el.textContent === format);
     }
 
     function addSelectedFormat(format) {
-        const formatElement = createFormatElement(format);
-        selectedFormatsContainer.appendChild(formatElement);
+        const el = createFormatElement(format);
+        selectedFormatsContainer.appendChild(el);
         updateSelectedFormatsInput();
     }
 
     function createFormatElement(format) {
-        const formatElement = document.createElement('div');
-        formatElement.className = 'selected-format';
-        formatElement.textContent = format;
-        formatElement.style.cssText = 'display: inline-block; margin: 4px; padding: 6px 10px; background-color: #eee; border-radius: 20px; cursor: pointer;';
-        formatElement.addEventListener('click', function () {
-            selectedFormatsContainer.removeChild(formatElement);
+        const el = document.createElement('div');
+        el.className = 'selected-format';
+        el.textContent = format;
+        el.style.cssText = 'display: inline-block; margin: 4px; padding: 6px 10px; background-color: #eee; border-radius: 20px; cursor: pointer;';
+        el.addEventListener('click', () => {
+            selectedFormatsContainer.removeChild(el);
             updateSelectedFormatsInput();
         });
-        return formatElement;
+        return el;
     }
 
     function updateSelectedFormatsInput() {
-        const formats = Array.from(selectedFormatsContainer.children)
-            .map(el => el.textContent);
+        const formats = Array.from(selectedFormatsContainer.children).map(el => el.textContent);
         selectedFormatsInput.value = formats.join(',');
+    }
+
+    function onInputChange() {
+        performSearch();
     }
 
     function performSearch(lat = null, lng = null) {
         const lieu = lieuInput.value;
-        const bio = bioInput ? bioInput.value : '';
-        const tri = triSelect ? triSelect.value : '';
-        const formats = selectedFormatsInput.value;
-        const tolerance = toleranceSlider.value;
 
         if (lieu && (!lat || !lng)) {
             geocodeLieu(lieu);
@@ -98,16 +110,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function geocodeLieu(lieu) {
         const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({address: lieu}, function (results, status) {
+        geocoder.geocode({ address: lieu }, (results, status) => {
             if (status === 'OK' && results[0]) {
                 const location = results[0].geometry.location;
-                const resolvedLat = location.lat();
-                const resolvedLng = location.lng();
-                document.getElementById('lat').value = resolvedLat;
-                document.getElementById('lng').value = resolvedLng;
-                fetchResults(resolvedLat, resolvedLng);
+                const lat = location.lat();
+                const lng = location.lng();
+                document.getElementById('lat').value = lat;
+                document.getElementById('lng').value = lng;
+                fetchResults(lat, lng);
             } else {
-                console.warn('Error:', status);
+                console.warn('Geocoding failed:', status);
                 fetchResults(null, null);
             }
         });
@@ -133,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('all-artistes').innerHTML = html;
             })
             .catch(error => {
-                console.error('Error', error);
+                console.error('Erreur lors de la recherche :', error);
             });
     }
 
@@ -148,10 +160,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('lng').value = lng;
                 performSearch(lat, lng);
             } else {
-                console.log("No place found.");
+                console.log("Lieu non trouvé.");
             }
         });
     };
 
     window.onload = initAutocomplete;
+
+    const form = document.getElementById('searchForm');
+    if (form) {
+        form.addEventListener('submit', handleFormSubmit);
+    }
 });
