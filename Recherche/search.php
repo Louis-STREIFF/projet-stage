@@ -9,7 +9,7 @@ require_once plugin_dir_path(__FILE__) . '../airtable.php';
 $latitude        = (!empty($_GET['lat'])) ? floatval($_GET['lat']) : null;
 $longitude       = (!empty($_GET['lng'])) ? floatval($_GET['lng']) : null;
 //$tolerance       = isset($_GET['tolerance']) ? floatval($_GET['tolerance']) : 1;
-//$tolerance       = 100; environ 100km de tolerance
+$tolerance       = 100; /* Environ 100km de tolérance */
 $bioKeywords     = isset($_GET['bio']) ? sanitize_text_field($_GET['bio']) : '';
 $selectedFormats = isset($_GET['selectedFormats']) ? array_map('sanitize_text_field', explode(',', $_GET['selectedFormats'])) : [];
 

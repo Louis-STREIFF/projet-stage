@@ -173,7 +173,7 @@ select[multiple] {
     margin: 20px auto;
     font-size: 14px;
     font-family: Arial, sans-serif;
-    position: relative; /* Ajouter pour positionner le bouton */
+    position: relative;
 }
 
 .artist-search-container h1 {
