@@ -8,7 +8,8 @@ require_once plugin_dir_path(__FILE__) . '../airtable.php';
 
 $latitude        = (!empty($_GET['lat'])) ? floatval($_GET['lat']) : null;
 $longitude       = (!empty($_GET['lng'])) ? floatval($_GET['lng']) : null;
-$tolerance       = isset($_GET['tolerance']) ? floatval($_GET['tolerance']) : 1;
+//$tolerance       = isset($_GET['tolerance']) ? floatval($_GET['tolerance']) : 1;
+//$tolerance       = 100; environ 100km de tolerance
 $bioKeywords     = isset($_GET['bio']) ? sanitize_text_field($_GET['bio']) : '';
 $selectedFormats = isset($_GET['selectedFormats']) ? array_map('sanitize_text_field', explode(',', $_GET['selectedFormats'])) : [];
 
@@ -64,6 +65,7 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
             $lastName = esc_html($fields['Last_Name'] ?? '');
             $bio = esc_html($fields['Artist_Biography'] ?? '');
             $imgUrl = isset($fields['Cover_Picture'][0]['url']) ? esc_url($fields['Cover_Picture'][0]['url']) : '';
+            $formats = isset($fields['Type']) && is_array($fields['Type']) ? $fields['Type'] : [];
 
             $artistSlug = sanitize_title($firstName . '-' . $lastName);
 
@@ -80,9 +82,21 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
                     </a>
                 </h3>
                 <p><?php echo $bio; ?></p>
+                <?php if (!empty($formats)) : ?>
+                    <div class="artist-formats">
+                        <strong>Formats:</strong>
+                        <div class="selected-formats-list">
+                            <?php foreach ($formats as $format) : ?>
+                                <span class="selected-format"><?php echo esc_html($format); ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         <?php endforeach; ?>
     <?php else : ?>
         <p>No artists found for your search.</p>
     <?php endif; ?>
 </div>
+
+

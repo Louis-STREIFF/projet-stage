@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const toleranceSlider = document.getElementById('tolerance');
-    const toleranceValue = document.getElementById('toleranceValue');
+    // const toleranceSlider = document.getElementById('tolerance');
+    // const toleranceValue = document.getElementById('toleranceValue');
     const formatSelect = document.getElementById('format');
     const selectedFormatsContainer = document.getElementById('selected-formats');
     const selectedFormatsInput = document.getElementById('selectedFormatsInput');
@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const triSelect = document.getElementById('tri');
     const lieuInput = document.getElementById('lieu');
 
-    toleranceValue.textContent = toleranceSlider.value;
+    // toleranceValue.textContent = toleranceSlider.value;
 
     function debounce(func, wait) {
         let timeout;
@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const debouncedOnInputChange = debounce(onInputChange, 1000);
 
-    toleranceSlider.addEventListener('input', () => {
-        toleranceValue.textContent = toleranceSlider.value;
-        debouncedOnInputChange();
-    });
+    // toleranceSlider.addEventListener('input', () => {
+    //     toleranceValue.textContent = toleranceSlider.value;
+    //     debouncedOnInputChange();
+    // });
 
     if (formatSelect) {
         formatSelect.addEventListener('change', () => {
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
             bio: bioInput ? bioInput.value : '',
             tri: triSelect ? triSelect.value : '',
             selectedFormats: selectedFormatsInput.value,
-            tolerance: toleranceSlider.value,
+            // tolerance: toleranceSlider.value,
             lat: document.getElementById('lat').value,
             lng: document.getElementById('lng').value
         });
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
             bio: bioInput ? bioInput.value : '',
             tri: triSelect ? triSelect.value : '',
             selectedFormats: selectedFormatsInput.value,
-            tolerance: toleranceSlider.value
+            // tolerance: toleranceSlider.value
         });
 
         if (lat !== null && lng !== null) {
