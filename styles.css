@@ -1,6 +1,6 @@
 body {
-    background-color: #2c2c2c;
-    color: #ffffff;
+    background-color: #f5f8ff;
+    color: #000000;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -10,36 +10,40 @@ h1 {
     text-align: center;
     margin-top: 20px;
     font-size: 2em;
-    color: #ffffff;
+    color: #0208ff;
 }
 
 a {
-    color: #ffffff;
+    color: #0208ff;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 a:hover {
-    color: #FFD700;
+    color: #000080;
     text-decoration: underline;
 }
 
 form {
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
-    align-items: center;
     justify-content: center;
-    margin: 20px;
+    align-items: flex-start;
+    gap: 10px;
 }
 
 .form-group {
+    display: flex;
+    flex-direction: column !important;
+    align-items: flex-start;
     margin: 10px;
+    min-width: 180px;
 }
 
-label {
-    margin-right: 10px;
-    font-size: 1.2em;
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.95em;
 }
 
 input[type="text"], select {
@@ -48,54 +52,76 @@ input[type="text"], select {
     margin-right: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #444;
-    color: #fff;
+    background-color: #ffffff;
+    color: #000;
 }
 
 button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #f1c40f;
-    color: #2c2c2c;
+    background-color: #0208ff;
+    color: #ffffff !important;
     font-size: 1em;
     cursor: pointer;
     margin: 10px;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #e1b40e;
+    background-color: #0000cc;
+}
+
+.artists-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
 }
 
 .profile {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 20px;
+    margin: 10px;
     padding: 20px;
-    border: 1px solid #444;
+    border: 1px solid #ccc;
     border-radius: 10px;
-    background-color: #333;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: calc(33.333% - 50px);
+    box-sizing: border-box;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.profile:hover {
+    transform: translateY(-10px);
+}
+
+.profile img {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #ccc;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 10px;
 }
 
 .profile h3 {
     margin: 0;
     font-size: 1.5em;
-    color: #f1c40f;
+    color: #0208ff;
 }
 
 .profile p {
     margin-top: 10px;
     font-size: 1em;
-    color: #ccc;
+    color: #333;
+    text-align: center;
 }
 
-.profile img {
-    margin-bottom: 10px;
-    max-width: 150px;
-    height: auto;
-    border-radius: 10px;
-}
 .selected-formats {
     display: none;
     flex-wrap: wrap;
@@ -103,26 +129,29 @@ button:hover {
 }
 
 .selected-format {
-    background-color: #f1c40f;
-    color: #2c2c2c;
+    background-color: #0208ff !important;
+    color: #ffffff;
     padding: 5px 10px;
     margin: 5px;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95em;
+    transition: background-color 0.3s ease;
 }
 
 .selected-format:hover {
-    background-color: #e1b40e;
+    background-color: #0000cc;
 }
 
 .artists-list h3 a {
-    color: #f1c40f;
+    color: #0208ff;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .artists-list h3 a:hover {
-    color: #FFD700;
+    color: #0000cc;
     text-decoration: underline;
 }
 
@@ -130,12 +159,111 @@ select[multiple] {
     height: 150px;
     width: 100%;
     box-sizing: border-box;
+    background-color: #ffffff;
+    color: #000;
 }
 
-.selected-format {
-    background-color: #e0e0e0;
-    padding: 5px 8px;
+.artist-search-container {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
     border-radius: 10px;
-    display: inline-block;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: 20px auto;
+    font-size: 14px;
 }
 
+
+.artist-search-container form {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    overflow-x: auto;
+}
+
+.artist-search-container .form-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 5px;
+    white-space: nowrap;
+}
+
+.artist-search-container label {
+    font-size: 13px;
+    margin-right: 6px;
+}
+
+.artist-search-container input[type="text"],
+.artist-search-container select,
+.artist-search-container input[type="range"] {
+    padding: 6px 8px;
+    font-size: 13px;
+    max-width: 150px;
+}
+
+.artist-search-container button {
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+#lieu {
+    width: 250px;
+}
+
+#tolerance {
+    width: 120px;
+    height: 4px;
+}
+
+#bio {
+    width: 300px;
+}
+
+.form-container {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.form-group.submit-button {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.form-group.submit-button button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0208ff;
+    color: #ffffff !important;
+    font-size: 1em;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.form-group.submit-button button:hover {
+    background-color: #0000cc;
+}
+
+@media (max-width: 1200px) {
+    .profile {
+        width: calc(50% - 40px);
+    }
+}
+
+@media (max-width: 768px) {
+    .profile {
+        width: 100%;
+    }
+}

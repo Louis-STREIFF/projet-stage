@@ -3,8 +3,18 @@
 require plugin_dir_path(dirname(__FILE__)) . 'config.php';
 require_once plugin_dir_path(dirname(__FILE__)) . 'airtable.php';
 
-
 $slug = get_query_var('artist_slug');
+
+$existing_page = get_page_by_path('artist/' . $slug, OBJECT, 'page');
+
+if (
+    $existing_page &&
+    trim($_SERVER['REQUEST_URI'], '/') !== trim(parse_url(get_permalink($existing_page), PHP_URL_PATH), '/')
+) {
+    wp_redirect(get_permalink($existing_page), 301);
+    exit;
+}
+
 
 $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 
@@ -35,16 +45,15 @@ get_header();
             <p><?php echo nl2br(esc_html($selected_artist['Artist_Biography'] ?? '')); ?></p>
 
             <div style="margin-top: 20px;">
-                <a href="<?php echo home_url('/'); ?>" class="selected-format">← Retour à l'accueil</a>
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="selected-format">← Retour à l'accueil</a>
             </div>
         </div>
     <?php else: ?>
         <div class="profile">
-            <h3>Artiste non trouvé</h3>
-            <p>Désolé, nous n'avons pas trouvé cet artiste.</p>
-
+            <h3>Artiste introuvable</h3>
+            <p>Aucun artiste correspondant n'a été trouvé.</p>
             <div style="margin-top: 20px;">
-                <a href="<?php echo home_url('/'); ?>" class="selected-format">← Retour à l'accueil</a>
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="selected-format">← Retour à l'accueil</a>
             </div>
         </div>
     <?php endif; ?>

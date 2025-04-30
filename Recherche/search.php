@@ -54,8 +54,8 @@ if (count($filters) > 1) {
 }
 
 $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFilter);
-
 ?>
+
 <div class="artists-list">
     <?php if (!empty($artists)) : ?>
         <?php foreach ($artists as $record) :
@@ -66,14 +66,17 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
             $imgUrl = isset($fields['Cover_Picture'][0]['url']) ? esc_url($fields['Cover_Picture'][0]['url']) : '';
 
             $artistSlug = sanitize_title($firstName . '-' . $lastName);
+
+            $custom_page = get_page_by_path($artistSlug);
+            $artistLink = $custom_page ? get_permalink($custom_page) : site_url('/artist/' . $artistSlug);
             ?>
             <div class="profile">
                 <?php if ($imgUrl) : ?>
                     <img src="<?php echo $imgUrl; ?>" alt="Photo of <?php echo "$firstName $lastName"; ?>">
                 <?php endif; ?>
                 <h3>
-                    <a href="<?php echo site_url('/artist/' . $artistSlug); ?>">
-                        <?php echo "$firstName $lastName"; ?>
+                    <a href="<?php echo esc_url($artistLink); ?>">
+                        <?php echo esc_html("$firstName $lastName"); ?>
                     </a>
                 </h3>
                 <p><?php echo $bio; ?></p>
@@ -83,4 +86,3 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
         <p>No artists found for your search.</p>
     <?php endif; ?>
 </div>
-
