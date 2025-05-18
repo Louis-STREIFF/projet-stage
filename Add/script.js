@@ -1,53 +1,57 @@
 document.addEventListener('DOMContentLoaded', function () {
-
-    const selectElement = document.getElementById('format');
-    const selectedFormatsContainer = document.getElementById('selected-formats');
-    const hiddenInput = document.getElementById('selectedFormatsInput');
-    const selectedFormats = [];
+    const selectElement    = document.getElementById('format');
+    const tagsContainer    = document.getElementById('selected-formats');
+    const inputsContainer  = document.getElementById('formats-inputs');
+    const selectedIds      = new Set();
 
     selectElement.addEventListener('change', function () {
-        const format = this.value;
-        if (format && !selectedFormats.includes(format)) {
-            selectedFormats.push(format);
-            addFormatTag(format);
-            updateSelectedFormatsInput();
+        const opt   = this.options[this.selectedIndex];
+        const id    = opt.value;
+        const label = opt.dataset.label;
+
+        if (!id || selectedIds.has(id)) {
+            this.selectedIndex = 0;
+            return;
         }
+        const tag = document.createElement('div');
+        tag.className = 'selected-format';
+        tag.textContent = label;
+        tag.style.cssText = `
+            display: inline-block;
+            margin: 4px;
+            padding: 6px 10px;
+            background-color: #eee;
+            border-radius: 20px;
+            cursor: pointer;
+        `;
+        tagsContainer.appendChild(tag);
+
+        const hid = document.createElement('input');
+        hid.type  = 'hidden';
+        hid.name  = 'selectedFormats[]';
+        hid.value = id;
+        inputsContainer.appendChild(hid);
+
+        selectedIds.add(id);
+
+        tag.addEventListener('click', function () {
+            tagsContainer.removeChild(tag);
+            inputsContainer.removeChild(hid);
+            selectedIds.delete(id);
+        });
+
         this.selectedIndex = 0;
     });
 
-    function addFormatTag(format) {
-        const formatElement = document.createElement('div');
-        formatElement.className = 'selected-format';
-        formatElement.textContent = format;
-        formatElement.style.cssText = 'display: inline-block; margin: 4px; padding: 6px 10px; background-color: #eee; border-radius: 20px; cursor: pointer;';
-        formatElement.addEventListener('click', function () {
-            selectedFormatsContainer.removeChild(formatElement);
-            const index = selectedFormats.indexOf(format);
-            if (index !== -1) selectedFormats.splice(index, 1);
-            updateSelectedFormatsInput();
-        });
-        selectedFormatsContainer.appendChild(formatElement);
-    }
-
-    function updateSelectedFormatsInput() {
-        hiddenInput.value = JSON.stringify(selectedFormats);
-        console.log("Hidden input updated:", hiddenInput.value);
-    }
-
-    function initAutocomplete() {
-        const autocomplete = new google.maps.places.Autocomplete(document.getElementById('lieu'));
+    window.initAutocomplete = function () {
+        const autocomplete = new google.maps.places.Autocomplete(
+            document.getElementById('lieu')
+        );
         autocomplete.addListener('place_changed', function () {
             const place = autocomplete.getPlace();
-            if (!place.geometry) {
-                console.log("No geometry found.");
-                return;
-            }
-            const lat = place.geometry.location.lat();
-            const lng = place.geometry.location.lng();
-            document.getElementById('lat').value = lat;
-            document.getElementById('lng').value = lng;
+            if (!place.geometry) return;
+            document.getElementById('lat').value = place.geometry.location.lat();
+            document.getElementById('lng').value = place.geometry.location.lng();
         });
-    }
-
-    initAutocomplete(); // appel direct ici, PAS dans window.onload
+    };
 });
