@@ -139,10 +139,10 @@ document.addEventListener('DOMContentLoaded', function () {
             queryParams.append('lng', lng);
         }
 
-        fetch('search.php?' + queryParams.toString())
+        fetch(monPluginData.ajaxUrl + '?action=rechercher_artistes&' + queryParams.toString())
             .then(response => response.text())
             .then(html => {
-                document.getElementById('all-artistes').innerHTML = html;
+                document.getElementById('artists-list').innerHTML = html;
             })
             .catch(error => {
                 console.error('Erreur lors de la recherche :', error);
