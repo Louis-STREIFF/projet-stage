@@ -86,13 +86,21 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
                     <div class="artist-formats">
                         <strong>Formats:</strong>
                         <div class="selected-formats-list">
-                            <?php foreach ($formats as $format) : ?>
-                                <span class="selected-format"><?php echo esc_html($format); ?></span>
+                            <?php foreach ($formats as $format) :
+                                $slug = sanitize_title($format);
+                                $url  = site_url('/services/' . $slug);
+                                ?>
+                                <a class="selected-format"
+                                   href="<?php echo esc_url($url); ?>"
+                                   target="_blank">
+                                    <?php echo esc_html($format); ?>
+                                </a>
                             <?php endforeach; ?>
                         </div>
                     </div>
                 <?php endif; ?>
             </div>
+
         <?php endforeach; ?>
     <?php else : ?>
         <p>No artists found for your search.</p>

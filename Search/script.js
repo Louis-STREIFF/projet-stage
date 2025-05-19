@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    const debouncedOnInputChange = debounce(onInputChange, 1000);
+    const debouncedOnInputChange = debounce(onInputChange, 500);
 
     // toleranceSlider.addEventListener('input', () => {
     //     toleranceValue.textContent = toleranceSlider.value;
@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
         el.addEventListener('click', () => {
             selectedFormatsContainer.removeChild(el);
             updateSelectedFormatsInput();
+            debouncedOnInputChange();
         });
         return el;
     }
@@ -139,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
             queryParams.append('lng', lng);
         }
 
-        fetch(monPluginData.ajaxUrl + '?action=rechercher_artistes&' + queryParams.toString())
+        fetch(monPluginData.ajaxUrl + '?action=search_artists&' + queryParams.toString())
             .then(response => response.text())
             .then(html => {
                 document.getElementById('artists-list').innerHTML = html;

@@ -234,17 +234,37 @@ select[multiple] {
     color: #ffffff;
     font-size: 1em;
     cursor: pointer;
-    margin: 20px auto; /* Centrer le bouton */
-    display: block; /* Afficher le bouton en bloc */
+    margin: 20px auto;
+    display: block;
     transition: background-color 0.3s ease;
-    position: relative; /* Positionner le bouton relativement */
-    top: 5px; /* Ajuster cette valeur pour baisser le bouton */
+    position: relative;
+    top: 5px;
     left: 50%;
-    transform: translateX(-50%); /* Centrer horizontalement */
+    transform: translateX(-50%);
 }
 
 .button:hover {
     background-color: #0000cc;
+}
+
+.artist-formats .selected-formats-list {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    gap: 8px;
+    justify-content: start;
+}
+
+a.selected-format {
+    text-decoration: none !important;
+    color: #ffffff !important;
+    padding: 5px 8px;
+    gap: 3px 6px;
+    margin: 1px 5px;
+    line-height: 1.1;
+}
+
+a.selected-format:hover {
+    text-decoration: none !important;
 }
 
 #lieu {
