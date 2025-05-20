@@ -10,11 +10,11 @@ h1 {
     text-align: center;
     margin-top: 20px;
     font-size: 2em;
-    color: #0208ff;
+    color: #0258ff;
 }
 
 a {
-    color: #0208ff;
+    color: #0258ff;
     text-decoration: none;
     transition: color 0.3s ease;
 }
@@ -60,7 +60,7 @@ button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #0208ff;
+    background-color: #0258ff;
     color: #ffffff !important;
     font-size: 1em;
     cursor: pointer;
@@ -112,7 +112,7 @@ button:hover {
 .profile h3 {
     margin: 0;
     font-size: 1.5em;
-    color: #0208ff;
+    color: #0258ff;
 }
 
 .profile p {
@@ -129,7 +129,7 @@ button:hover {
 }
 
 .selected-format {
-    background-color: #0208ff !important;
+    background-color: #0258ff !important;
     color: #ffffff;
     padding: 5px 10px;
     margin: 5px;
@@ -145,7 +145,7 @@ button:hover {
 }
 
 .artists-list h3 a {
-    color: #0208ff;
+    color: #0558ff;
     text-decoration: none;
     transition: color 0.3s ease;
 }
@@ -178,7 +178,7 @@ select[multiple] {
 
 .artist-search-container h1 {
     font-size: 2em;
-    color: #0208ff;
+    color: #0258ff;
     text-align: center;
     margin-top: 20px;
 }
@@ -230,7 +230,7 @@ select[multiple] {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #0208ff;
+    background-color: #0258ff;
     color: #ffffff;
     font-size: 1em;
     cursor: pointer;
