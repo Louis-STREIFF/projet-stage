@@ -1,0 +1,62 @@
+.artist-profile-container {
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    padding: 30px 20px;
+    box-shadow: none;
+    width: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.artist-location,
+.artist-formats {
+    margin: 10px 0;
+    font-size: 1em;
+    color: #333;
+    text-align: center;
+}
+
+.artist-formats ul {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+
+.artist-formats li {
+    background-color: #0258ff;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+.profile {
+    width: 100% !important;
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    margin: 0;
+    padding: 20px;
+}
+
+.profile h3,
+.profile p,
+.artist-location,
+.artist-formats,
+.profile > div:last-child {
+    text-align: center;
+}
+.profile > div:last-child {
+    text-align: center;
+}
+@media (max-width: 768px) {
+    .profile {
+        width: 100%;
+    }
+}

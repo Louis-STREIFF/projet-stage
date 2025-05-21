@@ -34,7 +34,7 @@ foreach ($artists as $artist) {
 get_header();
 ?>
 
-<div class="artist-page-container">
+<div class="artist-profile-container">
     <?php if ($selected_artist): ?>
         <div class="profile">
             <?php if (!empty($selected_artist['Cover_Picture'][0]['url'])): ?>
@@ -42,6 +42,33 @@ get_header();
             <?php endif; ?>
 
             <h3><?php echo esc_html($selected_artist['First_Name'] . ' ' . $selected_artist['Last_Name']); ?></h3>
+
+            <?php if (!empty($selected_artist['Location_Residence'])): ?>
+                <div class="artist-location">
+                    <strong>Localisation :</strong>
+                    <span><?php echo esc_html($selected_artist['Location_Residence']); ?></span>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($selected_artist['Type']) && is_array($selected_artist['Type'])): ?>
+                <div class="artist-formats">
+                    <strong>Formats :</strong>
+                    <div class="selected-formats-list">
+                        <?php foreach ($selected_artist['Type'] as $format):
+                            $slug = sanitize_title($format);
+                            $url  = site_url('/services/' . $slug);
+                            ?>
+                            <a class="selected-format"
+                               href="<?php echo esc_url($url); ?>"
+                               target="_blank">
+                                <?php echo esc_html($format); ?>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+
             <p><?php echo nl2br(esc_html($selected_artist['Artist_Biography'] ?? '')); ?></p>
 
             <div style="margin-top: 20px;">
@@ -58,7 +85,3 @@ get_header();
         </div>
     <?php endif; ?>
 </div>
-
-<?php
-get_footer();
-?>
