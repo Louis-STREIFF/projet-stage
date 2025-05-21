@@ -77,7 +77,7 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 90%;
+    width: 80%;
     margin: 0 auto;
 }
 
@@ -298,7 +298,6 @@ a.selected-format:hover {
     }
 }
 
-/* Style pour le conteneur des suggestions de l'autocomplétion */
 .pac-container {
     z-index: 1051 !important;
     font-family: 'Segoe UI', sans-serif;
@@ -310,8 +309,6 @@ a.selected-format:hover {
     width: 40% !important;
     box-sizing: border-box;
 }
-
-/* Style pour chaque élément de suggestion */
 .pac-item {
     padding: 10px;
     font-size: 16px;
@@ -321,40 +318,33 @@ a.selected-format:hover {
     border-bottom: 1px solid #eee;
 }
 
-/* Style pour l'élément de suggestion survolé */
 .pac-item:hover {
     background-color: #e0e0e0;
 }
 
-/* Style pour l'élément de suggestion sélectionné */
 .pac-item-selected {
     background-color: #0073aa;
     color: white;
 }
 
-/* Masquer l'icône par défaut */
 .pac-icon {
     display: none;
 }
 
-/* Style pour le texte de la suggestion */
 .pac-item-query {
     font-weight: bold;
     margin-right: 10px;
 }
 
-/* Style pour le texte correspondant à la recherche */
 .pac-matched {
     font-weight: bold;
 }
 
-/* Style pour l'icône personnalisée */
 .pac-item .icon {
     margin-right: 10px;
     color: #0073aa;
 }
 
-/* Ajouter une icône personnalisée */
 .pac-item::before {
     content: "🏛️";
     margin-right: 10px;

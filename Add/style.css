@@ -44,6 +44,18 @@ select {
     height: 36px;
 }
 
+input[type="email"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 13px;
+    background-color: #f9f9f9;
+    transition: border-color 0.2s ease;
+    height: 36px;
+}
+
+
 textarea {
     min-height: 80px;
     resize: vertical;
@@ -87,16 +99,15 @@ button[type="submit"] {
         grid-column: 1 / 2;
     }
 }
-
 .pac-container {
     z-index: 1051 !important;
     font-family: 'Segoe UI', sans-serif;
     background-color: #ffffff;
     border: 1px solid #ccc;
     border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     margin-top: 5px;
-    width: 30% !important;
+    width: 40% !important;
     box-sizing: border-box;
 }
 
@@ -106,7 +117,7 @@ button[type="submit"] {
     cursor: pointer;
     display: flex;
     align-items: center;
-    word-break: break-word;
+    border-bottom: 1px solid #eee;
 }
 
 .pac-item:hover {
@@ -114,7 +125,8 @@ button[type="submit"] {
 }
 
 .pac-item-selected {
-    background-color: #d4e6f1;
+    background-color: #0073aa;
+    color: white;
 }
 
 .pac-icon {
@@ -130,6 +142,15 @@ button[type="submit"] {
     font-weight: bold;
 }
 
+.pac-item .icon {
+    margin-right: 10px;
+    color: #0073aa;
+}
+
+.pac-item::before {
+    content: "🏛️";
+    margin-right: 10px;
+}
 .full-width-input {
     width: 100% !important;
     box-sizing: border-box;
