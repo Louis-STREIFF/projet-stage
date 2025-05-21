@@ -14,8 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_artist_form'])) {
     $longitude = $_POST['lng'] ?? null;
     $birthday  = $_POST['date'] ?? null;
     $phone     = $_POST['phone'] ?? null;
-
     $formats   = $_POST['selectedFormats'] ?? [];
+    $email     = sanitize_email($_POST['email'] ?? '');
 
     if (!empty($phone)) {
         $cleaned = preg_replace('/[\s.\-()]+/', '', $phone);
@@ -40,15 +40,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_artist_form'])) {
             'Artist_Biography'   => $bio,
             'Location_Residence' => $adress,
             'GPS_Coordinates'    => $coordinates,
-            'Type_Link'          => is_array($formats) ? array_values($formats) : [],
+            'Type'          => is_array($formats) ? array_values($formats) : [],
             'Phone_Number'       => $phone,
+            'Mail' => $email,
         ]
     ];
 
     if (!empty($birthday)) {
         $data['fields']['Birthday'] = $birthday;
     }
-
     $url = "https://api.airtable.com/v0/$BaseID/Waiting";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -65,16 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_artist_form'])) {
     curl_close($ch);
 }
 
-$formatRecords = getArtistsFromAirtable($AirtableAPIKey, $BaseID, 'Products_Services');
-$formatOptions = [];
-foreach ($formatRecords as $record) {
-    if (!empty($record['fields']['Type'])) {
-        $formatOptions[] = [
-            'id'    => $record['id'],
-            'label' => $record['fields']['Type'],
-        ];
-    }
-}
+
+$artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 ?>
 
 <link rel="stylesheet" href="<?php echo plugin_dir_url(__FILE__) . 'style.css'; ?>">
@@ -110,21 +102,32 @@ foreach ($formatRecords as $record) {
     </div>
 
     <div class="form-group">
+        <label for="email">Adresse e-mail :</label>
+        <input type="email" id="email" name="email" placeholder="exemple@domaine.com" required>
+    </div>
+
+    <div class="form-group">
         <label for="format">Vos formats :</label>
         <select id="format" class="input-shadow">
             <option value="" disabled selected>Sélectionnez un format</option>
-            <?php foreach ($formatOptions as $fmt): ?>
-                <option
-                        value="<?php echo esc_attr($fmt['id']); ?>"
-                        data-label="<?php echo esc_attr($fmt['label']); ?>"
-                >
-                    <?php echo esc_html($fmt['label']); ?>
+            <?php foreach (array_unique(call_user_func(function() use ($artists) {
+                $formats = [];
+                foreach ($artists as $rec) {
+                    if (!empty($rec['fields']['Type']) && is_array($rec['fields']['Type'])) {
+                        $formats = array_merge($formats, $rec['fields']['Type']);
+                    }
+                }
+                return $formats;
+            })) as $fmt): ?>
+                <option value="<?php echo esc_attr($fmt); ?>" data-label="<?php echo esc_attr($fmt); ?>">
+                    <?php echo esc_html($fmt); ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <div id="selected-formats"></div>
+        <div id="selected-formats" style="margin-top: 10px;"></div>
         <div id="formats-inputs"></div>
     </div>
+
 
     <div class="form-group">
         <label for="bio">Vos attentes :</label>

@@ -58,20 +58,22 @@ select:focus {
 }
 
 button[type="submit"] {
-    grid-column: 1 / 3;
     height: 40px;
-    background-color: #000;
+    background-color: #0208ff;
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 15px;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    padding: 0 24px;
 }
 
-button[type="submit"]:hover {
-    background-color: #222;
+.form-group.full-width {
+    display: flex !important;
+    justify-content: center !important;
+    margin-top: 30px !important;
+    margin-bottom: 0 !important;
 }
 
 @media (max-width: 768px) {

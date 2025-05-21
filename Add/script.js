@@ -1,57 +1,40 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const selectElement    = document.getElementById('format');
-    const tagsContainer    = document.getElementById('selected-formats');
-    const inputsContainer  = document.getElementById('formats-inputs');
-    const selectedIds      = new Set();
+    const selectElement   = document.getElementById('format');
+    const tagsContainer   = document.getElementById('selected-formats');
+    const inputsContainer = document.getElementById('formats-inputs');
+    const selectedValues  = new Set();
 
     selectElement.addEventListener('change', function () {
-        const opt   = this.options[this.selectedIndex];
-        const id    = opt.value;
-        const label = opt.dataset.label;
+        const option = this.options[this.selectedIndex];
+        const value  = option.value;
+        const label  = option.dataset.label;
 
-        if (!id || selectedIds.has(id)) {
+        if (!value || selectedValues.has(value)) {
             this.selectedIndex = 0;
             return;
         }
-        const tag = document.createElement('div');
-        tag.className = 'selected-format';
+
+        const tag = document.createElement('span');
         tag.textContent = label;
-        tag.style.cssText = `
-            display: inline-block;
-            margin: 4px;
-            padding: 6px 10px;
-            background-color: #eee;
-            border-radius: 20px;
-            cursor: pointer;
-        `;
+        tag.className = 'selected-formats';
+        tag.style.marginRight = '8px';
+        tag.style.cursor = 'pointer';
+
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'selectedFormats[]';
+        hiddenInput.value = value;
+
         tagsContainer.appendChild(tag);
-
-        const hid = document.createElement('input');
-        hid.type  = 'hidden';
-        hid.name  = 'selectedFormats[]';
-        hid.value = id;
-        inputsContainer.appendChild(hid);
-
-        selectedIds.add(id);
+        inputsContainer.appendChild(hiddenInput);
+        selectedValues.add(value);
 
         tag.addEventListener('click', function () {
             tagsContainer.removeChild(tag);
-            inputsContainer.removeChild(hid);
-            selectedIds.delete(id);
+            inputsContainer.removeChild(hiddenInput);
+            selectedValues.delete(value);
         });
 
         this.selectedIndex = 0;
     });
-
-    window.initAutocomplete = function () {
-        const autocomplete = new google.maps.places.Autocomplete(
-            document.getElementById('lieu')
-        );
-        autocomplete.addListener('place_changed', function () {
-            const place = autocomplete.getPlace();
-            if (!place.geometry) return;
-            document.getElementById('lat').value = place.geometry.location.lat();
-            document.getElementById('lng').value = place.geometry.location.lng();
-        });
-    };
 });

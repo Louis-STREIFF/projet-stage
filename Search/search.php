@@ -66,11 +66,9 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
             $bio = esc_html($fields['Artist_Biography'] ?? '');
             $imgUrl = isset($fields['Cover_Picture'][0]['url']) ? esc_url($fields['Cover_Picture'][0]['url']) : '';
             $formats = isset($fields['Type']) && is_array($fields['Type']) ? $fields['Type'] : [];
-
             $artistSlug = sanitize_title($firstName . '-' . $lastName);
-
             $custom_page = get_page_by_path($artistSlug);
-            $artistLink = $custom_page ? get_permalink($custom_page) : site_url('/artist/' . $artistSlug);
+            $artistLink = $custom_page ? get_permalink($custom_page) : site_url('/Artiste/' . $artistSlug);
             ?>
             <div class="profile">
                 <?php if ($imgUrl) : ?>
