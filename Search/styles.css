@@ -23,40 +23,40 @@ a:hover {
     color: #000080;
     text-decoration: underline;
 }
-
-form {
+.form-fields {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
-    gap: 10px;
+    width: 100%;
+    gap: 20px;
 }
 
 .form-group {
     display: flex;
-    flex-direction: column !important;
-    align-items: flex-start;
-    margin: 10px;
-    min-width: 180px;
+    flex-direction: column;
+    width: 30%;
+    box-sizing: border-box;
+    margin: 0;
 }
 
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 0.95em;
-}
-
-input[type="text"], select {
-    width: 200px;
-    padding: 10px;
-    margin-right: 10px;
+input[type="text"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 8px 12px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #ffffff;
-    color: #000;
+    border-radius: 8px;
+    font-size: 13px;
+    background-color: #f9f9f9;
+    transition: border-color 0.2s ease;
+    height: 36px;
+    box-sizing: border-box;
 }
 
-button {
+.button {
+    width: 15%;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -64,18 +64,33 @@ button {
     color: #ffffff !important;
     font-size: 1em;
     cursor: pointer;
-    margin: 10px;
+    margin: 20px auto;
+    display: block;
     transition: background-color 0.3s ease;
+    position: relative;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    margin: 0 auto;
+}
+
 
 button:hover {
     background-color: #0000cc;
 }
 
 .artists-list {
+    width: 1300px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 20px;
     padding: 20px;
 }
@@ -84,13 +99,12 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 10px;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
+    max-width: 600px;
     width: calc(33.333% - 50px);
     box-sizing: border-box;
     overflow: hidden;
@@ -164,16 +178,8 @@ select[multiple] {
 }
 
 .artist-search-container {
-    background-color: #ffffff;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 1000px;
-    margin: 20px auto;
-    font-size: 14px;
-    font-family: Arial, sans-serif;
-    position: relative;
+    max-width: 1400px;
+    width: 100%;
 }
 
 .artist-search-container h1 {
@@ -186,7 +192,7 @@ select[multiple] {
 .form-fields {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
     gap: 10px;
 }
@@ -290,4 +296,66 @@ a.selected-format:hover {
     .profile {
         width: 100%;
     }
+}
+
+/* Style pour le conteneur des suggestions de l'autocomplétion */
+.pac-container {
+    z-index: 1051 !important;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+    width: 40% !important;
+    box-sizing: border-box;
+}
+
+/* Style pour chaque élément de suggestion */
+.pac-item {
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+
+/* Style pour l'élément de suggestion survolé */
+.pac-item:hover {
+    background-color: #e0e0e0;
+}
+
+/* Style pour l'élément de suggestion sélectionné */
+.pac-item-selected {
+    background-color: #0073aa;
+    color: white;
+}
+
+/* Masquer l'icône par défaut */
+.pac-icon {
+    display: none;
+}
+
+/* Style pour le texte de la suggestion */
+.pac-item-query {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* Style pour le texte correspondant à la recherche */
+.pac-matched {
+    font-weight: bold;
+}
+
+/* Style pour l'icône personnalisée */
+.pac-item .icon {
+    margin-right: 10px;
+    color: #0073aa;
+}
+
+/* Ajouter une icône personnalisée */
+.pac-item::before {
+    content: "🏛️";
+    margin-right: 10px;
 }
