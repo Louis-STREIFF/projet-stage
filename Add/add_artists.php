@@ -8,14 +8,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_artist_form'])) {
     $prenom    = sanitize_text_field($_POST['firstname'] ?? '');
     $nom       = sanitize_text_field($_POST['lastname'] ?? '');
     $bio       = sanitize_textarea_field($_POST['bio'] ?? '');
-    $photoUrl  = esc_url_raw($_POST['photo_url'] ?? '');
+//    $photoUrl  = esc_url_raw($_POST['photo_url'] ?? '');
     $adress    = sanitize_text_field($_POST['lieu'] ?? '');
     $latitude  = $_POST['lat'] ?? null;
     $longitude = $_POST['lng'] ?? null;
     $birthday  = $_POST['date'] ?? null;
     $phone     = $_POST['phone'] ?? null;
-    $formats   = $_POST['selectedFormats'] ?? [];
+//    $formats   = $_POST['selectedFormats'] ?? [];
     $email     = sanitize_email($_POST['email'] ?? '');
+    $website   = $_POST['website'] ?? '';
 
     if (!empty($phone)) {
         $cleaned = preg_replace('/[\s.\-()]+/', '', $phone);
@@ -40,15 +41,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_artist_form'])) {
             'Artist_Biography'   => $bio,
             'Location_Residence' => $adress,
             'GPS_Coordinates'    => $coordinates,
-            'Type'          => is_array($formats) ? array_values($formats) : [],
             'Phone_Number'       => $phone,
             'Mail' => $email,
+            'Status' => "waiting",
+            'Website_URL' => $website,
         ]
     ];
 
     if (!empty($birthday)) {
         $data['fields']['Birthday'] = $birthday;
     }
+
+
     $url = "https://api.airtable.com/v0/$BaseID/Waiting";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -102,12 +106,12 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 
     <div class="form-group">
         <label for="date">Date de naissance :</label>
-        <input type="date" id="date" name="date">
+        <input type="date" id="date" name="date" required>
     </div>
 
     <div class="form-group phone-field">
         <label for="phone">Numéro de téléphone :</label>
-        <input type="text" id="phone" name="phone" placeholder="06 12 34 56 78">
+        <input type="text" id="phone" name="phone" placeholder="06 12 34 56 78" required>
     </div>
 
     <div class="form-group">
@@ -115,32 +119,36 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
         <input type="email" id="email" name="email" placeholder="exemple@domaine.com" required>
     </div>
 
+<!--    <div class="form-group">-->
+<!--        <label for="format">Vos formats :</label>-->
+<!--        <select id="format" class="input-shadow">-->
+<!--            <option value="" disabled selected>Sélectionnez un format</option>-->
+<!--            --><?php //foreach (array_unique(call_user_func(function() use ($artists) {
+//                $formats = [];
+//                foreach ($artists as $rec) {
+//                    if (!empty($rec['fields']['Type']) && is_array($rec['fields']['Type'])) {
+//                        $formats = array_merge($formats, $rec['fields']['Type']);
+//                    }
+//                }
+//                return $formats;
+//            })) as $fmt): ?>
+<!--                <option value="--><?php //echo esc_attr($fmt); ?><!--" data-label="--><?php //echo esc_attr($fmt); ?><!--">-->
+<!--                    --><?php //echo esc_html($fmt); ?>
+<!--                </option>-->
+<!--            --><?php //endforeach; ?>
+<!--        </select>-->
+<!--        <div id="selected-formats" style="margin-top: 10px;"></div>-->
+<!--        <div id="formats-inputs"></div>-->
+<!--    </div>-->
+<!--    -->
     <div class="form-group">
-        <label for="format">Vos formats :</label>
-        <select id="format" class="input-shadow">
-            <option value="" disabled selected>Sélectionnez un format</option>
-            <?php foreach (array_unique(call_user_func(function() use ($artists) {
-                $formats = [];
-                foreach ($artists as $rec) {
-                    if (!empty($rec['fields']['Type']) && is_array($rec['fields']['Type'])) {
-                        $formats = array_merge($formats, $rec['fields']['Type']);
-                    }
-                }
-                return $formats;
-            })) as $fmt): ?>
-                <option value="<?php echo esc_attr($fmt); ?>" data-label="<?php echo esc_attr($fmt); ?>">
-                    <?php echo esc_html($fmt); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <div id="selected-formats" style="margin-top: 10px;"></div>
-        <div id="formats-inputs"></div>
+        <label for="website">Lien vers votre site :</label>
+        <input type="text" id="website" name="website" required>
     </div>
-
 
     <div class="form-group">
         <label for="bio">Motivation :</label>
-        <textarea id="bio" name="bio"></textarea>
+        <textarea id="bio" name="bio" required></textarea>
     </div>
 
     <div class="form-group full-width">

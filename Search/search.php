@@ -63,6 +63,7 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
     <?php if (!empty($artists)) : ?>
         <?php foreach ($artists as $record) :
             $fields = $record['fields'];
+            $publicName = esc_html($fields['Public_Name'] ?? '');
             $firstName = esc_html($fields['First_Name'] ?? '');
             $lastName = esc_html($fields['Last_Name'] ?? '');
             $bio = esc_html($fields['Short_Biography'] ?? '');
@@ -80,7 +81,7 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
                 <?php endif; ?>
                 <h3>
                     <a href="<?php echo esc_url($artistLink); ?>">
-                        <?php echo esc_html("$firstName $lastName"); ?>
+                        <?php echo $publicName; ?>
                     </a>
                 </h3>
                 <p><?php echo $bio; ?></p>

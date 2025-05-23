@@ -1,12 +1,12 @@
 <?php
 require __DIR__ . "/../config.php";
 
-$tableAttenteUrl = "https://api.airtable.com/v0/$baseId/Waiting";
-$PrincipalsTableUrl = "https://api.airtable.com/v0/$baseId/$TableName";
+$tableAttenteUrl = "https://api.airtable.com/v0/$BaseID/Waiting";
+$PrincipalsTableUrl = "https://api.airtable.com/v0/$BaseID/$TableName";
 
 $options = [
     "http" => [
-        "header" => "Authorization: Bearer $apiKey"
+        "header" => "Authorization: Bearer $AirtableAPIKey",
     ]
 ];
 $context = stream_context_create($options);
@@ -16,12 +16,11 @@ $data = json_decode($response, true);
 foreach ($data['records'] as $record) {
     if (isset($record['fields']['Validation']) && $record['fields']['Validation'] === true) {
         $fields = [
-            'Firstname' => $record['fields']['First_Name'],
-            'Lastname' => $record['fields']['Last_Name'],
-            'Bio' => $record['fields']['Artist_Biography'],
-            'Format' => $record['fields']['Type'],
-            'Residences' => $record['fields']['Location_Residence'],
-            'Coordinates' => $record['fields']['GPS_Coordinates'],
+            'First_Name' => $record['fields']['First_Name'],
+            'Last_Name' => $record['fields']['Last_Name'],
+            'Artist_Biography' => $record['fields']['Artist_Biography'],
+            'Location_Residence' => $record['fields']['Location_Residence'],
+            'GPS_Coordinates' => $record['fields']['GPS_Coordinates'],
         ];
 
         $dataToInsert = [
@@ -31,7 +30,7 @@ foreach ($data['records'] as $record) {
         $ch = curl_init($PrincipalsTableUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "Authorization: Bearer $apiKey",
+            "Authorization: Bearer $AirtableAPIKey",
             "Content-Type: application/json"
         ]);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -46,7 +45,7 @@ foreach ($data['records'] as $record) {
             $ch = curl_init($deleteUrl);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                "Authorization: Bearer $apiKey"
+                "Authorization: Bearer $AirtableAPIKey",
             ]);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
             curl_exec($ch);
