@@ -62,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_artist_form'])) {
     if ($response === false) {
         echo "<div class='error'>Erreur cURL : " . curl_error($ch) . "</div>";
     }
+
     curl_close($ch);
 }
 
@@ -86,9 +87,17 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 
     <div class="form-group">
         <label for="lieu">Adresse :</label>
-        <input type="text" id="lieu" name="lieu" class="full-width-input" required>
-        <input type="hidden" id="lat" name="lat">
-        <input type="hidden" id="lng" name="lng">
+        <div class="input-with-icon">
+        <span class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
+              <path fill="#808080" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0
+              9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
+            </svg>
+        </span>
+            <input type="text" id="lieu" name="lieu" placeholder="Indiquez un lieu" required>
+            <input type="hidden" id="lat" name="lat">
+            <input type="hidden" id="lng" name="lng">
+        </div>
     </div>
 
     <div class="form-group">
@@ -96,7 +105,7 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
         <input type="date" id="date" name="date">
     </div>
 
-    <div class="form-group">
+    <div class="form-group phone-field">
         <label for="phone">Numéro de téléphone :</label>
         <input type="text" id="phone" name="phone" placeholder="06 12 34 56 78">
     </div>
@@ -130,13 +139,14 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 
 
     <div class="form-group">
-        <label for="bio">Vos attentes :</label>
+        <label for="bio">Motivation :</label>
         <textarea id="bio" name="bio"></textarea>
     </div>
 
     <div class="form-group full-width">
         <button type="submit">Ajouter l'artiste</button>
     </div>
+
 </form>
 
 <?php if (!empty($response)) : ?>

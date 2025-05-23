@@ -4,27 +4,26 @@ form {
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     width: 90%;
-    margin: 40px auto;
     font-family: 'Segoe UI', sans-serif;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px !important;
-    row-gap: -10px !important;
+    gap: 10px;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
     width: 100%;
+    grid-column: span 1 !important;
     margin-bottom: -30px;
 }
 
 .form-group.full-width {
-    grid-column: 1 / 3;
+    grid-column: span 2 !important;
 }
 
 label {
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     font-weight: 600;
     font-size: 14px;
     color: #222;
@@ -32,6 +31,7 @@ label {
 
 input[type="text"],
 input[type="date"],
+input[type="email"],
 textarea,
 select {
     width: 100%;
@@ -41,23 +41,12 @@ select {
     font-size: 13px;
     background-color: #f9f9f9;
     transition: border-color 0.2s ease;
-    height: 36px;
+    height: 32px;
+    box-sizing: border-box;
 }
-
-input[type="email"] {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 13px;
-    background-color: #f9f9f9;
-    transition: border-color 0.2s ease;
-    height: 36px;
-}
-
 
 textarea {
-    min-height: 80px;
+    min-height: 70px;
     resize: vertical;
 }
 
@@ -79,14 +68,15 @@ button[type="submit"] {
     font-weight: 500;
     cursor: pointer;
     padding: 0 24px;
+    margin-top: 20px;
+    margin-left: 40%;
 }
 
-.form-group.full-width {
-    display: flex !important;
-    justify-content: center !important;
-    margin-top: 30px !important;
-    margin-bottom: 0 !important;
+.phone-field input {
+    width: 70%;
+    min-width: 160px;
 }
+
 
 @media (max-width: 768px) {
     form {
@@ -99,6 +89,38 @@ button[type="submit"] {
         grid-column: 1 / 2;
     }
 }
+
+.input-with-icon {
+    position: relative;
+    width: 100%;
+}
+
+.input-with-icon .icon {
+    position: absolute;
+    left: 10px;
+    top: 35%;
+    transform: translateY(-50%);
+    height: 20px;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-with-icon input[type="text"] {
+    padding-left: 36px;
+    height: 35px;
+    font-size: 13px;
+    box-sizing: border-box;
+}
+
+input,
+select,
+textarea {
+    box-sizing: border-box;
+    display: block;
+}
+
 .pac-container {
     z-index: 1051 !important;
     font-family: 'Segoe UI', sans-serif;
@@ -150,8 +172,4 @@ button[type="submit"] {
 .pac-item::before {
     content: "🏛️";
     margin-right: 10px;
-}
-.full-width-input {
-    width: 100% !important;
-    box-sizing: border-box;
 }
