@@ -34,17 +34,19 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
                 <label for="format">Format :</label>
                 <select id="format" name="selectedFormats[]" class="input-shadow">
                     <option value="" disabled selected>Selectionnez un format</option>
-                    <?php foreach (array_unique(call_user_func(function() use ($artists) {
-                        $formats = [];
-                        foreach ($artists as $rec) {
-                            if (!empty($rec['fields']['Type']) && is_array($rec['fields']['Type'])) {
-                                $formats = array_merge($formats, $rec['fields']['Type']);
-                            }
+                    <?php
+                    $allProductServiceIds = [];
+                    foreach ($artists as $rec) {
+                        if (!empty($rec['fields']['Services_Type']) && is_array($rec['fields']['Services_Type'])) {
+                            $allProductServiceIds = array_merge($allProductServiceIds, $rec['fields']['Services_Type']);
                         }
-                        return $formats;
-                    })) as $fmt): ?>
-                        <option value="<?php echo esc_attr($fmt); ?>"><?php echo esc_html($fmt); ?></option>
+                    }
+                    $allProductServiceIds = array_unique($allProductServiceIds);
+                    $formatNames = getProductServiceNames($AirtableAPIKey, $BaseID, $allProductServiceIds);
+                    foreach ($formatNames as $name): ?>
+                        <option value="<?php echo esc_attr($name); ?>"><?php echo esc_html($name); ?></option>
                     <?php endforeach; ?>
+
                 </select>
                 <div id="selected-formats"></div>
                 <input type="hidden" id="selectedFormatsInput" name="selectedFormats">

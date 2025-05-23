@@ -37,7 +37,7 @@ if (!empty($selectedFormats)) {
     $formatConditions = [];
     foreach ($selectedFormats as $format) {
         $f = strtolower($format);
-        $formatConditions[] = "IF(FIND(LOWER('$f'), LOWER({Type})), TRUE(), FALSE())";
+        $formatConditions[] = "IF(FIND(LOWER('$f'), LOWER({Services_Type})), TRUE(), FALSE())";
     }
     $filters[] = 'AND(' . implode(',', $formatConditions) . ')';
 }
@@ -46,6 +46,8 @@ if (!empty($bioKeywords)) {
     $bio = strtolower($bioKeywords);
     $filters[] = "IF(FIND(LOWER('$bio'), LOWER({Artist_Biography})), TRUE(), FALSE())";
 }
+$filters[] = "Status = 'public'";
+
 
 $finalFilter = '';
 if (count($filters) > 1) {
@@ -65,7 +67,9 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
             $lastName = esc_html($fields['Last_Name'] ?? '');
             $bio = esc_html($fields['Short_Biography'] ?? '');
             $imgUrl = isset($fields['Cover_Picture'][0]['url']) ? esc_url($fields['Cover_Picture'][0]['url']) : '';
-            $formats = isset($fields['Type']) && is_array($fields['Type']) ? $fields['Type'] : [];
+            $formats = isset($fields['Services_Type']) && is_array($fields['Services_Type'])
+                ? getProductServiceNames($AirtableAPIKey, $BaseID, $fields['Services_Type'])
+                : [];
             $artistSlug = sanitize_title($firstName . '-' . $lastName);
             $custom_page = get_page_by_path($artistSlug);
             $artistLink = $custom_page ? get_permalink($custom_page) : site_url('/Artiste/' . $artistSlug);
