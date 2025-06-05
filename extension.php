@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Mon Plugin Test
- * Description: Shortcodes + CSS/JS + Recherche AJAX native + Pages dynamiques artistes
+ * Plugin Name: Airtable Form
+ * Description: Custom shortcodes, styles and scripts, native AJAX search, and dynamic artist profile pages.
  * Version: 1.0
- * Author: Ton Nom
+ * Author: Louis Streiff
  */
 
 require_once plugin_dir_path(__FILE__) . 'airtable.php';
@@ -47,7 +47,6 @@ add_shortcode('add_artist_form', function () {
     return ob_get_clean();
 });
 
-// 🔄 AJAX - Recherche artistes
 add_action('wp_ajax_search_artists', 'search_artists');
 add_action('wp_ajax_nopriv_search_artists', 'search_artists');
 
@@ -261,5 +260,5 @@ function afficher_artistes_par_format_shortcode($atts) {
     return ob_get_clean();
 }
 
-add_shortcode('artistes_par_format', 'afficher_artistes_par_format_shortcode');
+add_shortcode('artist_by_format', 'afficher_artistes_par_format_shortcode');
 

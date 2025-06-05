@@ -45,6 +45,10 @@ foreach ($artists as $artist) {
                 <?php if (!empty($selected_artist['Location_Residence'])): ?>
                     <p class="location">📍 <?php echo esc_html($selected_artist['Location_Residence']); ?></p>
                 <?php endif; ?>
+                <div class="return-home">
+                    <a href="https://monmentaliste.fr/contact-2/" class="selected-format">✉ Nous contacter</a>
+                </div>
+
             </div>
 
             <?php
@@ -70,6 +74,10 @@ foreach ($artists as $artist) {
             <p><?php echo nl2br(esc_html($selected_artist['Artist_Biography'])); ?></p>
         </div>
     <?php endif; ?>
+
+    <div class="return-home">
+        <a href="<?php echo esc_url(home_url('/')); ?>" class="selected-format">← Retour à l'accueil</a>
+    </div>
 
 </div>
 
