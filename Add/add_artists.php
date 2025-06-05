@@ -147,8 +147,8 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
     </div>
 
     <div class="form-group">
-        <label for="bio">Motivation :</label>
-        <textarea id="bio" name="bio" required></textarea>
+        <label for="bio">Vos attentes :</label>
+        <input type="text" id="bio" name="bio" required>
     </div>
 
     <div class="form-group full-width">
@@ -156,13 +156,6 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
     </div>
 
 </form>
-
-<?php if (!empty($response)) : ?>
-    <div class="api-response" style="margin-top:20px;padding:10px;background:#f0f0f0;">
-        <strong>Réponse API :</strong>
-        <pre><?php echo esc_html($response); ?></pre>
-    </div>
-<?php endif; ?>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=<?php echo esc_attr($MapAPIKey); ?>&libraries=places&callback=initAutocomplete" async defer></script>
 <script src="<?php echo plugin_dir_url(__FILE__) . 'script.js'; ?>" defer></script>

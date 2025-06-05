@@ -6,7 +6,7 @@
  * Author: Ton Nom
  */
 
-// 📦 Charger CSS et JS
+require_once plugin_dir_path(__FILE__) . 'airtable.php';
 function mon_plugin_enqueue_assets() {
     wp_enqueue_style(
         'mon-plugin-styles',
@@ -29,21 +29,18 @@ function mon_plugin_enqueue_assets() {
 }
 add_action('wp_enqueue_scripts', 'mon_plugin_enqueue_assets');
 
-// 🔍 Shortcode [search]
 add_shortcode('search', function () {
     ob_start();
     include plugin_dir_path(__FILE__) . 'Search/form.php';
     return ob_get_clean();
 });
 
-// 📋 Shortcode [search_results]
 add_shortcode('search_results', function () {
     ob_start();
     include plugin_dir_path(__FILE__) . 'Search/search.php';
     return ob_get_clean();
 });
 
-// ➕ Shortcode [add_artist_form]
 add_shortcode('add_artist_form', function () {
     ob_start();
     include plugin_dir_path(__FILE__) . 'Add/add_artists.php';
@@ -61,7 +58,6 @@ function search_artists() {
     wp_die();
 }
 
-// 🌐 Réécriture d’URL vers /artiste/{slug}
 add_action('init', function () {
     add_rewrite_rule(
         '(?i)^artiste/([^/]+)/?$',
@@ -70,13 +66,11 @@ add_action('init', function () {
     );
 });
 
-// 📦 Déclarer la variable personnalisée
 add_filter('query_vars', function ($vars) {
     $vars[] = 'artist_slug';
     return $vars;
 });
 
-// 🧩 Shortcode [artist_profile] utilisé dans la page "Artiste"
 add_shortcode('artist_profile', 'display_artist_profile');
 
 function display_artist_profile() {
@@ -85,28 +79,43 @@ function display_artist_profile() {
         return '<p>Aucun artiste sélectionné.</p>';
     }
 
-    $selected_artist = get_artist_by_slug($slug); // À personnaliser
+    $selected_artist = get_artist_by_slug($slug);
     ob_start();
     include plugin_dir_path(__FILE__) . 'templates/single-artist.php';
     return ob_get_clean();
 }
 
-// 🧠 Exemple de fonction pour récupérer un artiste
-function get_artist_by_slug($slug) {
-    // À remplacer par un appel Airtable, API, BDD, etc.
-    $artists = [
-        'louis-streiff' => [
-            'First_Name' => 'Louis',
-            'Last_Name' => 'Streiff',
-            'Artist_Biography' => 'Biographie de Louis Streiff...',
-            'Cover_Picture' => [['url' => 'https://example.com/louis.jpg']],
-            'Location_Residence' => 'Paris',
-            'Type' => 'Peintre'
-        ]
-    ];
+add_action('template_redirect', function () {
+    if (is_page('artiste') && get_query_var('artist_slug')) {
+        $slug = get_query_var('artist_slug');
 
-    return $artists[$slug] ?? null;
+        $existing_page = get_page_by_path($slug, OBJECT, 'page');
+
+        if ($existing_page) {
+            wp_redirect(get_permalink($existing_page), 301);
+            exit;
+        }
+    }
+});
+function get_artist_by_slug($slug) {
+    $apiKey = get_option('mon_plugin_airtable_api_key');
+    $baseID = get_option('mon_plugin_airtable_base_id');
+    $tableName = get_option('mon_plugin_airtable_table_name');
+
+    if (!$apiKey || !$baseID || !$tableName) {
+        return null;
+    }
+
+    $filter = "AND({Status} = 'public', LOWER(SUBSTITUTE({Slug}, ' ', '-')) = '" . strtolower($slug) . "')";
+    $results = getArtistsFromAirtable($apiKey, $baseID, $tableName, $filter);
+
+    if (!empty($results)) {
+        return $results[0]['fields'];
+    }
+
+    return null;
 }
+
 
 function mon_plugin_enqueue_artist_styles() {
     if (is_page('artiste') && get_query_var('artist_slug')) {
@@ -117,6 +126,7 @@ function mon_plugin_enqueue_artist_styles() {
     }
 }
 add_action('wp_enqueue_scripts', 'mon_plugin_enqueue_artist_styles');
+
 
 add_action('admin_menu', 'mon_plugin_ajouter_menu');
 
@@ -218,4 +228,38 @@ add_action('admin_notices', function () {
         echo '<div class="notice notice-warning"><p>⚠️ Votre plugin n’est pas encore configuré. Merci d’entrer votre clé API dans <a href="' . esc_url(admin_url('options-general.php?page=mon_plugin_api_settings')) . '">les réglages du plugin</a>.</p></div>';
     }
 });
+
+function afficher_artistes_par_format_shortcode($atts) {
+    ob_start();
+
+    $apiKey = get_option('mon_plugin_airtable_api_key');
+    $baseID = get_option('mon_plugin_airtable_base_id');
+    $tableName = get_option('mon_plugin_airtable_table_name');
+    $atts = shortcode_atts([
+        'slug' => '',
+    ], $atts);
+    $formatSlug = strtolower(sanitize_title($atts['slug']));
+    $filter = "Status='public'";
+    $allArtists = getArtistsFromAirtable($apiKey, $baseID, $tableName, $filter);
+
+    $artists = [];
+    foreach ($allArtists as $record) {
+        $fields = $record['fields'] ?? [];
+
+        if (!empty($fields['Services_Type']) && is_array($fields['Services_Type'])) {
+            $formatNames = getProductServiceNames($apiKey, $baseID, $fields['Services_Type']);
+            foreach ($formatNames as $name) {
+                if (strtolower(sanitize_title($name)) === $formatSlug) {
+                    $artists[] = $record;
+                    break;
+                }
+            }
+        }
+    }
+    include plugin_dir_path(__FILE__) . 'Templates/format-results.php';
+
+    return ob_get_clean();
+}
+
+add_shortcode('artistes_par_format', 'afficher_artistes_par_format_shortcode');
 

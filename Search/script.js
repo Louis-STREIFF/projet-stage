@@ -1,14 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // const toleranceSlider = document.getElementById('tolerance');
-    // const toleranceValue = document.getElementById('toleranceValue');
     const formatSelect = document.getElementById('format');
     const selectedFormatsContainer = document.getElementById('selected-formats');
     const selectedFormatsInput = document.getElementById('selectedFormatsInput');
     const bioInput = document.getElementById('bio');
     const triSelect = document.getElementById('tri');
     const lieuInput = document.getElementById('lieu');
-
-    // toleranceValue.textContent = toleranceSlider.value;
+    const latInput = document.getElementById('lat');
+    const lngInput = document.getElementById('lng');
 
     function debounce(func, wait) {
         let timeout;
@@ -18,12 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    const debouncedOnInputChange = debounce(onInputChange, 500);
-
-    // toleranceSlider.addEventListener('input', () => {
-    //     toleranceValue.textContent = toleranceSlider.value;
-    //     debouncedOnInputChange();
-    // });
+    const debouncedOnInputChange = debounce(onInputChange, 200);
 
     if (formatSelect) {
         formatSelect.addEventListener('change', () => {
@@ -47,18 +40,34 @@ document.addEventListener('DOMContentLoaded', function () {
         triSelect.addEventListener('change', debouncedOnInputChange);
     }
 
+    if (lieuInput) {
+        lieuInput.addEventListener('input', () => {
+            // Si le champ "lieu" est vidé, on efface les coordonnées GPS
+            if (lieuInput.value.trim() === '') {
+                latInput.value = '';
+                lngInput.value = '';
+            }
+            debouncedOnInputChange();
+        });
+    }
+
     function handleFormSubmit(event) {
         event.preventDefault();
         updateSelectedFormatsInput();
+
+        // Assure que lat/lng sont vides si lieu est vide
+        if (lieuInput.value.trim() === '') {
+            latInput.value = '';
+            lngInput.value = '';
+        }
 
         const queryParams = new URLSearchParams({
             lieu: lieuInput.value,
             bio: bioInput ? bioInput.value : '',
             tri: triSelect ? triSelect.value : '',
             selectedFormats: selectedFormatsInput.value,
-            // tolerance: toleranceSlider.value,
-            lat: document.getElementById('lat').value,
-            lng: document.getElementById('lng').value
+            lat: latInput.value,
+            lng: lngInput.value
         });
 
         const url = `${monPluginData.siteUrl}/resultat-recherche/?${queryParams.toString()}`;
@@ -116,8 +125,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const location = results[0].geometry.location;
                 const lat = location.lat();
                 const lng = location.lng();
-                document.getElementById('lat').value = lat;
-                document.getElementById('lng').value = lng;
+                latInput.value = lat;
+                lngInput.value = lng;
                 fetchResults(lat, lng);
             } else {
                 console.warn('Geocoding failed:', status);
@@ -131,8 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
             lieu: lieuInput.value,
             bio: bioInput ? bioInput.value : '',
             tri: triSelect ? triSelect.value : '',
-            selectedFormats: selectedFormatsInput.value,
-            // tolerance: toleranceSlider.value
+            selectedFormats: selectedFormatsInput.value
         });
 
         if (lat !== null && lng !== null) {
@@ -151,14 +159,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.initAutocomplete = function () {
-        const autocomplete = new google.maps.places.Autocomplete(document.getElementById('lieu'));
+        const autocomplete = new google.maps.places.Autocomplete(lieuInput);
         autocomplete.addListener('place_changed', function () {
             const place = autocomplete.getPlace();
             if (place.geometry) {
                 const lat = place.geometry.location.lat();
                 const lng = place.geometry.location.lng();
-                document.getElementById('lat').value = lat;
-                document.getElementById('lng').value = lng;
+                latInput.value = lat;
+                lngInput.value = lng;
                 performSearch(lat, lng);
             } else {
                 console.log("Lieu non trouvé.");

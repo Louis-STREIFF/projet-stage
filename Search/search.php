@@ -6,12 +6,21 @@ if (!defined('ABSPATH')) {
 require plugin_dir_path(__FILE__) . '../config.php';
 require_once plugin_dir_path(__FILE__) . '../airtable.php';
 
-$latitude        = (!empty($_GET['lat'])) ? floatval($_GET['lat']) : null;
-$longitude       = (!empty($_GET['lng'])) ? floatval($_GET['lng']) : null;
+$latitude  = (!empty($_GET['lat'])) ? floatval($_GET['lat']) : null;
+$longitude = (!empty($_GET['lng'])) ? floatval($_GET['lng']) : null;
 //$tolerance       = isset($_GET['tolerance']) ? floatval($_GET['tolerance']) : 1;
-$tolerance       = 100; /* Environ 100km de tolérance */
-$bioKeywords     = isset($_GET['bio']) ? sanitize_text_field($_GET['bio']) : '';
-$selectedFormats = isset($_GET['selectedFormats']) ? array_map('sanitize_text_field', explode(',', $_GET['selectedFormats'])) : [];
+$tolerance = 150;
+$lieu = isset($_GET['lieu']) ? trim($_GET['lieu']) : '';
+
+if ($lieu === '') {
+    $latitude = null;
+    $longitude = null;
+}
+
+$bioKeywords = isset($_GET['bio']) ? sanitize_text_field($_GET['bio']) : '';
+$selectedFormats = isset($_GET['selectedFormats'])
+    ? array_filter(array_map('sanitize_text_field', explode(',', $_GET['selectedFormats'])))
+    : [];
 
 $filters = [];
 
@@ -72,12 +81,15 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
                 ? getProductServiceNames($AirtableAPIKey, $BaseID, $fields['Services_Type'])
                 : [];
             $artistSlug = sanitize_title($firstName . '-' . $lastName);
-            $custom_page = get_page_by_path($artistSlug);
-            $artistLink = $custom_page ? get_permalink($custom_page) : site_url('/Artiste/' . $artistSlug);
+            $custom_page = get_page_by_path('artiste/' . $artistSlug);
+            $artistLink = ($custom_page && $custom_page->post_status === 'publish')
+                ? get_permalink($custom_page)
+                : site_url('/artiste/' . $artistSlug);
+
             ?>
             <div class="profile">
                 <?php if ($imgUrl) : ?>
-                    <img src="<?php echo $imgUrl; ?>" alt="Photo of <?php echo "$firstName $lastName"; ?>">
+                    <img class="artist-photo" src="<?php echo $imgUrl; ?>" alt="Photo of <?php echo "$firstName $lastName"; ?>">
                 <?php endif; ?>
                 <h3>
                     <a href="<?php echo esc_url($artistLink); ?>">
@@ -91,7 +103,7 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName, $finalFi
                         <div class="selected-formats-list">
                             <?php foreach ($formats as $format) :
                                 $slug = sanitize_title($format);
-                                $url  = site_url('/services/' . $slug);
+                                $url  = site_url('/animations/' . $slug);
                                 ?>
                                 <a class="selected-format"
                                    href="<?php echo esc_url($url); ?>"

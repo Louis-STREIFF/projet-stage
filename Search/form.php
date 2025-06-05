@@ -63,7 +63,6 @@ $artists = getArtistsFromAirtable($AirtableAPIKey, $BaseID, $TableName);
 </div>
 <button type="submit" class="button" form="search-form">Rechercher</button>
 
-
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=<?php echo esc_js($MapAPIKey); ?>&libraries=places&callback=initAutocomplete">
 </script>

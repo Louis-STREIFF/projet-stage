@@ -2,6 +2,12 @@
 require 'config.php';
 
 function getArtistsFromAirtable($AirtableAPIKey, $baseID, $tableName, $filter = '') {
+    $cache_key = 'airtable_artists_' . md5($baseID . $tableName . $filter);
+    $cached = get_transient($cache_key);
+    if ($cached !== false) {
+        return $cached;
+    }
+
     $url = "https://api.airtable.com/v0/$baseID/$tableName";
     if ($filter) {
         $url .= "?filterByFormula=" . urlencode($filter);
@@ -16,16 +22,28 @@ function getArtistsFromAirtable($AirtableAPIKey, $baseID, $tableName, $filter = 
 
     $response = curl_exec($ch);
     if ($response === false) {
-        echo "Erreur cURL : " . curl_error($ch);
+        error_log("Erreur cURL : " . curl_error($ch));
         curl_close($ch);
         return [];
     }
     curl_close($ch);
 
     $data = json_decode($response, true);
-    return isset($data['records']) ? $data['records'] : [];
+    $records = isset($data['records']) ? $data['records'] : [];
+    set_transient($cache_key, $records, 5 * MINUTE_IN_SECONDS);
+
+    return $records;
 }
+
 function getProductServiceNames($AirtableAPIKey, $baseID, $productServiceIds) {
+    if (empty($productServiceIds)) return [];
+
+    $cache_key = 'airtable_services_' . md5(implode(',', $productServiceIds));
+    $cached = get_transient($cache_key);
+    if ($cached !== false) {
+        return $cached;
+    }
+
     $names = [];
 
     foreach ($productServiceIds as $serviceId) {
@@ -45,6 +63,7 @@ function getProductServiceNames($AirtableAPIKey, $baseID, $productServiceIds) {
             $names[] = $data['fields']['Name'];
         }
     }
+    set_transient($cache_key, $names, 10 * MINUTE_IN_SECONDS);
 
     return $names;
 }
